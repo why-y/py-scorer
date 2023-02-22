@@ -1,5 +1,3 @@
-from enum import Enum
-
 class Game:
 
     def __init__(self, server, returner):
@@ -14,7 +12,8 @@ class Game:
         else:
             serverScore = self.__ralliesToScore(self.serverRallyPoints, self.returnerRallyPoints)
             returnerScore = self.__ralliesToScore(self.returnerRallyPoints, self.serverRallyPoints)
-            return "{}:{}".format(serverScore, returnerScore)
+            return (serverScore, returnerScore)
+ #           return "{}:{}".format(serverScore, returnerScore)
 
     def rallyForServer(self):
         if(self.isOver()):
