@@ -2,11 +2,12 @@ import unittest
 import scorer
 
 from scorer.game import Game
+from scorer.player import Player
 
 class TestGame(unittest.TestCase):
 
-    SERVER = "Tom"
-    RETURNER = "Eric"
+    SERVER = Player("Tom")
+    RETURNER = Player("Eric")
 
     def setUp(self) -> None:
         self.game = Game(TestGame.SERVER, TestGame.RETURNER)

@@ -2,11 +2,12 @@ import unittest
 import scorer
 
 from scorer.set import Set
+from scorer.player import Player
 
 class TestSet(unittest.TestCase):
 
-    SERVER = "Tom"
-    RETURNER = "Eric"
+    SERVER = Player("Tom")
+    RETURNER = Player("Eric")
 
     def setUp(self) -> None:
         self.set = Set(TestSet.SERVER, TestSet.RETURNER)
