@@ -1,4 +1,5 @@
 class Game:
+    '''A class to score a tennis game'''
 
     def __init__(self, server, returner):
         self.server = server
