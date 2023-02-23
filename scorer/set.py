@@ -1,11 +1,11 @@
 import logging
-
+from scorer.player import Player
 logging.basicConfig(level=logging.DEBUG)
 
 class Set:
     '''A class to score a tennis sets'''
 
-    def __init__(self, server, returner):
+    def __init__(self, server: Player, returner: Player) -> None:
         self.server = server
         self.returner = returner
         self.serverGames = 0
@@ -14,12 +14,12 @@ class Set:
     def score(self):
         return (self.serverGames, self.returnerGames)
     
-    def gameForServer(self):
+    def gameForServer(self) -> None:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated set!")
         self.serverGames += 1
 
-    def gameForReturner(self):
+    def gameForReturner(self) -> None:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated set!")
         self.returnerGames += 1

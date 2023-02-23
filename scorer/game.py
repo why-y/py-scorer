@@ -1,13 +1,15 @@
+from scorer.player import Player
+
 class Game:
     '''A class to score a tennis game'''
 
-    def __init__(self, server, returner):
+    def __init__(self, server: Player, returner: Player) -> None:
         self.server = server
         self.returner = returner
         self.serverRallyPoints = 0
         self.returnerRallyPoints = 0
 
-    def score(self):
+    def score(self) -> None:
         if(self.isOver()):
             return None
         else:
@@ -16,12 +18,12 @@ class Game:
             return (serverScore, returnerScore)
  #           return "{}:{}".format(serverScore, returnerScore)
 
-    def rallyForServer(self):
+    def rallyForServer(self) -> None:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated game!")
         self.serverRallyPoints+=1
         
-    def rallyForReturner(self):
+    def rallyForReturner(self) -> None:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated game!")
         self.returnerRallyPoints+=1
