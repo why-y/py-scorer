@@ -13,6 +13,26 @@ class Match:
         self.sets = []
         self.bestOf = 3
 
+    def rallyForServer(self) -> None:
+        
+        if(self.isOver()):
+            raise ValueError("Cannot score on a terminated match!")
+        
+        if not (self.__hasRunningSet()):
+            self.sets.append(Set(self.server, self.returner))
+
+        self.__getRunningSet().rallyForServer()
+ 
+    def rallyForReturner(self) -> None:
+        
+        if(self.isOver()):
+            raise ValueError("Cannot score on a terminated match!")
+        
+        if not (self.__hasRunningSet()):
+            self.sets.append(Set(self.server, self.returner))
+
+        self.__getRunningSet().rallyForReturner()
+
     def isOver(self):
         if(self.__hasRunningSet()):
             return False
@@ -20,7 +40,7 @@ class Match:
             serverSets = Match.__getNoOfSetsWonBy(self.sets, self.server)
             returnerSets = Match.__getNoOfSetsWonBy(self.sets, self.returner)
             return True if \
-                (serverSets >= self.bestOf or returnerSets >= self.bestOf) \
+                (serverSets > self.bestOf/2 or returnerSets > self.bestOf/2) \
                  else False
 
     def __getRunningSet(self) -> Set:

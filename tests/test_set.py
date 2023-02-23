@@ -23,36 +23,40 @@ class TestSet(unittest.TestCase):
         self.assertFalse(self.set.isOver())
 
     def test_6_0_is_over(self):
-        Helper.scoreXtimesServer(self.set, 6*4)
+        Helper.scoreXtimesServer(self.set, Helper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.set.isOver())
 
+    def test_6_0_winner_is_Tom(self):
+        Helper.scoreXtimesServer(self.set, Helper.NO_OF_RALLIES_TO_WIN_SET)
+        self.assertEqual(self.set.winner(), self.SERVER)
+
     def test_cannot_score_terminated_set(self):
-        Helper.scoreXtimesServer(self.set, 6*4)
+        Helper.scoreXtimesServer(self.set, Helper.NO_OF_RALLIES_TO_WIN_SET)
         #terminated
         with self.assertRaises(ValueError):
             self.set.rallyForServer()
 
     def test_6_5_is_not_over(self):
-        Helper.scoreXtimesReturner(self.set, 5)
-        Helper.scoreXtimesServer(self.set, 6)
+        Helper.scoreXtimesReturner(self.set, 5*Helper.NO_OF_RALLIES_TO_WIN_GAME)
+        Helper.scoreXtimesServer(self.set, 6*Helper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertFalse(self.set.isOver())
 
     def test_5_7_is_over(self):
-        Helper.scoreXtimesReturner(self.set, 5*4)
-        Helper.scoreXtimesServer(self.set, 7*4)
+        Helper.scoreXtimesReturner(self.set, 5*Helper.NO_OF_RALLIES_TO_WIN_GAME)
+        Helper.scoreXtimesServer(self.set, 7*Helper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertTrue(self.set.isOver())
 
     def test_7_6_is_not_over(self):
-        Helper.scoreXtimesServer(self.set, 5)
-        Helper.scoreXtimesReturner(self.set, 6)
-        Helper.scoreXtimesServer(self.set, 2)
+        Helper.scoreXtimesServer(self.set, 5*Helper.NO_OF_RALLIES_TO_WIN_GAME)
+        Helper.scoreXtimesReturner(self.set, 6*Helper.NO_OF_RALLIES_TO_WIN_GAME)
+        Helper.scoreXtimesServer(self.set, 2*Helper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertFalse(self.set.isOver())
 
     def test_start_set_score_0_0(self):
         self.assertEqual(self.set.score(), (0, 0))
 
     def test_score_1_0(self):
-        Helper.scoreXtimesServer(self.set, 4)
+        Helper.scoreXtimesServer(self.set, Helper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertEqual(self.set.score(), (1, 0))
 
 if __name__ == '__main__':

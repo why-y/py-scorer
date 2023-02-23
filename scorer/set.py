@@ -47,7 +47,14 @@ class Set:
                 (serverGames >=6 or returnerGames >=6) and \
                 (Set.__twoGamesAhead(serverGames, returnerGames) or Set.__twoGamesAhead(returnerGames, serverGames)) \
                  else False
-            
+
+    def winner(self):
+        if(self.isOver()):
+            serverGames = Set.__getNoOfGamesWonBy(self.games, self.server)
+            returnerGames = Set.__getNoOfGamesWonBy(self.games, self.returner)
+            return self.server if serverGames>returnerGames else self.returner
+        else:
+            return None           
 
     def __getRunningGame(self) -> Game:
         return None if len(self.games)==0 or self.games[-1].isOver() else self.games[-1]

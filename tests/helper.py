@@ -2,6 +2,9 @@
 class Helper:
     '''A helper class for tennis scorer unit tests'''
 
+    NO_OF_RALLIES_TO_WIN_GAME = 4
+    NO_OF_RALLIES_TO_WIN_SET = 6 * NO_OF_RALLIES_TO_WIN_GAME
+
     def __init__(self) -> None:
         pass
 
