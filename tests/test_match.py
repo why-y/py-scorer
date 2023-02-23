@@ -32,6 +32,21 @@ class TestMatch(unittest.TestCase):
         Helper.scoreXtimesServer(self.match, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.match.isOver())
 
+    def test_cannot_score_terminated_match(self):
+        Helper.scoreXtimesServer(self.match, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
+        #terminated
+        with self.assertRaises(ValueError):
+            self.match.rallyForServer()
+
+    def test_1_1_is_not_over(self):
+        Helper.scoreXtimesReturner(self.match, Helper.NO_OF_RALLIES_TO_WIN_SET)
+        Helper.scoreXtimesServer(self.match, Helper.NO_OF_RALLIES_TO_WIN_SET)
+        self.assertFalse(self.match.isOver())
+
+    def test_2_1_is_over(self):
+        Helper.scoreXtimesReturner(self.match, Helper.NO_OF_RALLIES_TO_WIN_SET)
+        Helper.scoreXtimesServer(self.match, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
+        self.assertTrue(self.match.isOver())
 
 if __name__ == '__main__':
     unittest.main()

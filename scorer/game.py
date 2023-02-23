@@ -3,6 +3,8 @@ from scorer.player import Player
 class Game:
     '''A class to score a tennis game'''
 
+    GAME_KEY = "Game"
+
     def __init__(self, server: Player, returner: Player) -> None:
         self.server = server
         self.returner = returner
@@ -15,8 +17,7 @@ class Game:
         else:
             serverScore = self.__ralliesToScore(self.serverRallyPoints, self.returnerRallyPoints)
             returnerScore = self.__ralliesToScore(self.returnerRallyPoints, self.serverRallyPoints)
-            return (serverScore, returnerScore)
- #           return "{}:{}".format(serverScore, returnerScore)
+            return {Game.GAME_KEY : (serverScore, returnerScore)}
 
     def rallyForServer(self) -> None:
         if(self.isOver()):

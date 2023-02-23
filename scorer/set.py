@@ -7,6 +7,8 @@ logging.basicConfig(level=logging.DEBUG)
 class Set:
     '''A class to score a tennis sets'''
 
+    SET_KEY = "Set"
+
     def __init__(self, server: Player, returner: Player) -> None:
         self.server = server
         self.returner = returner
@@ -14,8 +16,14 @@ class Set:
 
     def score(self):
         noOfGamesWonByServer = Set.__getNoOfGamesWonBy(self.games, self.server)
-        noOfGamesWonByReturner = Set.__getNoOfGamesWonBy(self.games, self.returner)       
-        return (noOfGamesWonByServer, noOfGamesWonByReturner)
+        noOfGamesWonByReturner = Set.__getNoOfGamesWonBy(self.games, self.returner)
+        score = {
+            Set.SET_KEY : (noOfGamesWonByServer, noOfGamesWonByReturner)
+        }
+        runningGame = self.__getRunningGame()
+        gameScore = runningGame.score() if runningGame is not None else {Game.GAME_KEY:(0,0)}
+        score.update(gameScore)
+        return score
     
     def rallyForServer(self) -> None:
         

@@ -53,11 +53,20 @@ class TestSet(unittest.TestCase):
         self.assertFalse(self.set.isOver())
 
     def test_start_set_score_0_0(self):
-        self.assertEqual(self.set.score(), (0, 0))
+        self.assertEqual(self.set.score(), TestSet.__format_score((0, 0),(0,0)))
 
     def test_score_1_0(self):
         Helper.scoreXtimesServer(self.set, Helper.NO_OF_RALLIES_TO_WIN_GAME)
-        self.assertEqual(self.set.score(), (1, 0))
+        self.assertEqual(self.set.score(), TestSet.__format_score((1, 0),(0,0)))
+
+    @classmethod
+    def __format_score(cls, set_score, game_score):
+        return {
+            Helper.SET_KEY:set_score,
+            Helper.GAME_KEY:game_score
+        }
+
+
 
 if __name__ == '__main__':
     unittest.main()

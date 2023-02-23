@@ -4,6 +4,9 @@ class Helper:
 
     NO_OF_RALLIES_TO_WIN_GAME = 4
     NO_OF_RALLIES_TO_WIN_SET = 6 * NO_OF_RALLIES_TO_WIN_GAME
+    SET_KEY = "Set"
+    GAME_KEY = "Game"
+
 
     def __init__(self) -> None:
         pass
