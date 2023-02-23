@@ -7,7 +7,6 @@ class Helper:
     SET_KEY = "Set"
     GAME_KEY = "Game"
 
-
     def __init__(self) -> None:
         pass
 

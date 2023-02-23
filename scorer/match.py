@@ -1,6 +1,7 @@
 import logging
 from scorer.player import Player
 from scorer.set import Set
+from scorer.game import Game
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -12,6 +13,16 @@ class Match:
         self.returner = returner
         self.sets = []
         self.bestOf = 3
+
+    def score(self):
+        score = {}
+        setCounter = 0
+        for set in self.sets:
+            setCounter+=1
+            setKey = Set.SET_KEY + str(setCounter)
+            score.update({setKey:set.score().get(Set.SET_KEY)})
+            score.update({Game.GAME_KEY:set.score().get(Game.GAME_KEY)})
+        return score
 
     def rallyForServer(self) -> None:
         
