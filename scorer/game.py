@@ -9,7 +9,7 @@ class Game:
         self.serverRallyPoints = 0
         self.returnerRallyPoints = 0
 
-    def score(self) -> None:
+    def score(self):
         if(self.isOver()):
             return None
         else:
