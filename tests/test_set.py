@@ -3,6 +3,7 @@ import scorer
 
 from scorer.set import Set
 from scorer.player import Player
+from tests.helper import Helper
 
 class TestSet(unittest.TestCase):
 
@@ -22,47 +23,37 @@ class TestSet(unittest.TestCase):
         self.assertFalse(self.set.isOver())
 
     def test_6_0_is_over(self):
-        TestSet.__scoreXtimesServer(self.set, 6*4)
+        Helper.scoreXtimesServer(self.set, 6*4)
         self.assertTrue(self.set.isOver())
 
     def test_cannot_score_terminated_set(self):
-        TestSet.__scoreXtimesServer(self.set, 6*4)
+        Helper.scoreXtimesServer(self.set, 6*4)
         #terminated
         with self.assertRaises(ValueError):
             self.set.rallyForServer()
 
     def test_6_5_is_not_over(self):
-        TestSet.__scoreXtimesReturner(self.set, 5)
-        TestSet.__scoreXtimesServer(self.set, 6)
+        Helper.scoreXtimesReturner(self.set, 5)
+        Helper.scoreXtimesServer(self.set, 6)
         self.assertFalse(self.set.isOver())
 
     def test_5_7_is_over(self):
-        TestSet.__scoreXtimesReturner(self.set, 5*4)
-        TestSet.__scoreXtimesServer(self.set, 7*4)
+        Helper.scoreXtimesReturner(self.set, 5*4)
+        Helper.scoreXtimesServer(self.set, 7*4)
         self.assertTrue(self.set.isOver())
 
     def test_7_6_is_not_over(self):
-        TestSet.__scoreXtimesServer(self.set, 5)
-        TestSet.__scoreXtimesReturner(self.set, 6)
-        TestSet.__scoreXtimesServer(self.set, 2)
+        Helper.scoreXtimesServer(self.set, 5)
+        Helper.scoreXtimesReturner(self.set, 6)
+        Helper.scoreXtimesServer(self.set, 2)
         self.assertFalse(self.set.isOver())
 
     def test_start_set_score_0_0(self):
         self.assertEqual(self.set.score(), (0, 0))
 
     def test_score_1_0(self):
-        TestSet.__scoreXtimesServer(self.set, 4)
+        Helper.scoreXtimesServer(self.set, 4)
         self.assertEqual(self.set.score(), (1, 0))
-
-    @classmethod
-    def __scoreXtimesServer(cls, set, noOfRallies):
-        for _ in range(noOfRallies):
-            set.rallyForServer()
-
-    @classmethod
-    def __scoreXtimesReturner(cls, set, noOfGames):
-        for _ in range(noOfGames):
-            set.rallyForReturner()
 
 if __name__ == '__main__':
     unittest.main()
