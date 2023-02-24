@@ -54,6 +54,14 @@ class Match:
                 (serverSets > self.bestOf/2 or returnerSets > self.bestOf/2) \
                  else False
 
+    def winner(self):
+        if(self.isOver()):
+            serverSets = Match.__getNoOfSetsWonBy(self.sets, self.server)
+            returnerSets = Match.__getNoOfSetsWonBy(self.sets, self.returner)
+            return self.server if serverSets>returnerSets else self.returner
+        else:
+            return None           
+
     def __getRunningSet(self) -> Set:
         return None if len(self.sets)==0 or self.sets[-1].isOver() else self.sets[-1]
 

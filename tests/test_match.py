@@ -48,6 +48,10 @@ class TestMatch(unittest.TestCase):
         Helper.scoreXtimesServer(self.testMatch, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.testMatch.isOver())
 
+    def test_6_0__6_0_winner_is_Tom(self):
+        Helper.scoreXtimesServer(self.testMatch, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
+        self.assertEqual(self.testMatch.winner(), self.SERVER)
+    
     def test_score_6_0__0_6__4_3__15_30(self):
         Helper.scoreXtimesServer(self.testMatch, Helper.NO_OF_RALLIES_TO_WIN_SET)
         Helper.scoreXtimesReturner(self.testMatch, Helper.NO_OF_RALLIES_TO_WIN_SET)
