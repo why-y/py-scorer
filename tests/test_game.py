@@ -72,6 +72,13 @@ class TestGame(unittest.TestCase):
         Helper.scoreXtimesReturner(self.testGame, 3)
         self.assertEqual(self.testGame.score(), TestGame.__format_score(("D", "D")))
 
+    def test_score_deuce_long_game(self):
+        Helper.scoreXtimesServer(self.testGame, 3)
+        Helper.scoreXtimesReturner(self.testGame, 4)
+        Helper.scoreXtimesServer(self.testGame, 2)
+        Helper.scoreXtimesReturner(self.testGame, 1)
+        self.assertEqual(self.testGame.score(), TestGame.__format_score(("D", "D")))
+
     def test_score_advantage_server(self):
         Helper.scoreXtimesReturner(self.testGame, 3)
         Helper.scoreXtimesServer(self.testGame, 4)
@@ -81,6 +88,12 @@ class TestGame(unittest.TestCase):
         Helper.scoreXtimesServer(self.testGame, 3)
         Helper.scoreXtimesReturner(self.testGame, 4)
         self.assertEqual(self.testGame.score(), TestGame.__format_score((40, "A")))
+
+    def test_score_advantage_long_game(self):
+        Helper.scoreXtimesServer(self.testGame, 3)
+        Helper.scoreXtimesReturner(self.testGame, 4)
+        Helper.scoreXtimesServer(self.testGame, 2)
+        self.assertEqual(self.testGame.score(), TestGame.__format_score(("A", 40)))
 
     def test_score_15_30(self):
         self.testGame.rallyForServer()

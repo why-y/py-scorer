@@ -45,11 +45,14 @@ class Game:
 
     @classmethod
     def __ralliesToScore(cls, points, opponentPoints):
-        if(points < 3):
+        if(points < 3):  
+            # 0 is 0, 1 is 15, 2 is 30
             return points * 15
         elif(points == opponentPoints):
+            # >2 and equal is deuce
             return "D"
-        elif(points == 3):
+        elif(points == 3 or points < opponentPoints):
+            # 3 is 40, A for opponent is 40
             return 40
         else:
             return "A"
