@@ -8,12 +8,12 @@ logging.basicConfig(level=logging.DEBUG)
 class Match:
     '''A class to score a tennis match'''
 
-    def __init__(self, server: Player, returner: Player) -> None:
+    def __init__(self, server: Player, returner: Player, bestOf=3) -> None:
         self.server = server
         self.returner = returner
         self.sets = []
         self.sets.append(Set(server, returner))
-        self.bestOf = 3
+        self.bestOf = bestOf
 
     def score(self):
         score = {}

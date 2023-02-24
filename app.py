@@ -18,10 +18,10 @@ def format_name(name) -> str:
     return "{}|".format(name.ljust(20,' '))
 
 def format_set(set, pos) -> str:
-    return " {} |".format(str(set.score().get("Set")[pos]).rjust(3,' '))
+    return " {} |".format(str(set.score().get("Set")[pos]).rjust(1,' '))
 
 def format_game(currentSet, pos) -> str:
-    return " {} |".format(str(currentSet.score().get("Game")[pos]).rjust(4,' '))
+    return " {} |".format(str(currentSet.score().get("Game")[pos]).rjust(2,' '))
 
 def app():
     serverName = input('Enter the servers name   : ')
@@ -29,7 +29,7 @@ def app():
     print('Start Match between {} and {}.'.format(serverName, returnerName))
     print('{} serves.'.format(serverName))
 
-    match = Match(Player(serverName), Player(returnerName))
+    match = Match(Player(serverName), Player(returnerName), 5)
     print(match_to_str(match))
 
     while not match.isOver():

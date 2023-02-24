@@ -27,6 +27,16 @@ class TestMatch(unittest.TestCase):
         Helper.scoreXtimesServer(self.testMatch, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.testMatch.isOver())
 
+    def test_2_0_is_not_over_on_best_of_five(self):
+        bestOfFiveMatch = Match(TestMatch.SERVER, TestMatch.RETURNER, 5)
+        Helper.scoreXtimesServer(bestOfFiveMatch, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
+        self.assertFalse(bestOfFiveMatch.isOver())
+
+    def test_3_0_is_over_on_best_of_five(self):
+        bestOfFiveMatch = Match(TestMatch.SERVER, TestMatch.RETURNER, 5)
+        Helper.scoreXtimesServer(bestOfFiveMatch, 3*Helper.NO_OF_RALLIES_TO_WIN_SET)
+        self.assertTrue(bestOfFiveMatch.isOver())
+
     def test_2_1_winner_is_tom(self):
         Helper.scoreXtimesReturner(self.testMatch, 1*Helper.NO_OF_RALLIES_TO_WIN_SET)
         Helper.scoreXtimesServer(self.testMatch, 2*Helper.NO_OF_RALLIES_TO_WIN_SET)
