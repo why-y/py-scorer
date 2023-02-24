@@ -12,6 +12,7 @@ class Match:
         self.server = server
         self.returner = returner
         self.sets = []
+        self.sets.append(Set(server, returner))
         self.bestOf = 3
 
     def score(self):

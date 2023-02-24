@@ -13,6 +13,7 @@ class Set:
         self.server = server
         self.returner = returner
         self.games = []
+        self.games.append(Game(self.server, self.returner))
 
     def score(self):
         noOfGamesWonByServer = Set.__getNoOfGamesWonBy(self.games, self.server)
