@@ -20,6 +20,18 @@ class TestGame(unittest.TestCase):
     def test_start_game_returner_is_eric(self):
         self.assertEqual(self.testGame.returner, TestGame.RETURNER)  
     
+    def test_game_over(self):
+        Helper.scoreXtimesReturner(self.testGame, 3)
+        Helper.scoreXtimesServer(self.testGame, 4)
+        self.assertFalse(self.testGame.isOver())
+        self.testGame.rallyForServer()
+        self.assertTrue(self.testGame.isOver())
+
+    def test_winner_is_none(self):
+        self.testGame.rallyForServer()
+        self.testGame.rallyForReturner()
+        self.assertIsNone(self.testGame.winner())
+
     def test_start_game_score_love_all(self):
         self.assertEqual(self.testGame.score(), TestGame.__format_score((0, 0)))
 
@@ -46,18 +58,6 @@ class TestGame(unittest.TestCase):
         Helper.scoreXtimesReturner(self.testGame, 2)
         Helper.scoreXtimesServer(self.testGame, 3)
         self.assertEqual(self.testGame.score(), TestGame.__format_score((40, 30)))
-
-    def test_game_over(self):
-        Helper.scoreXtimesReturner(self.testGame, 3)
-        Helper.scoreXtimesServer(self.testGame, 4)
-        self.assertFalse(self.testGame.isOver())
-        self.testGame.rallyForServer()
-        self.assertTrue(self.testGame.isOver())
-
-    def test_winner_is_none(self):
-        self.testGame.rallyForServer()
-        self.testGame.rallyForReturner()
-        self.assertIsNone(self.testGame.winner())
 
     def test_winner_is_server(self):
         Helper.scoreXtimesServer(self.testGame, 4)
