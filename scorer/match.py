@@ -20,9 +20,9 @@ class Match:
         setCounter = 0
         for set in self.sets:
             setCounter+=1
-            setKey = Set.SET_KEY + str(setCounter)
-            score.update({setKey:set.score().get(Set.SET_KEY)})
-            score.update({Game.GAME_KEY:set.score().get(Game.GAME_KEY)})
+            setKey = Set.KEY + str(setCounter)
+            score.update({setKey:set.score().get(Set.KEY)})
+            score.update({Game.KEY:set.score().get(Game.KEY)})
         return score
 
     def rallyForServer(self) -> None:
