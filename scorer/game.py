@@ -1,3 +1,4 @@
+import scorer.scorer_helper as Helper
 from scorer.player import Player
 
 class Game:
@@ -30,18 +31,14 @@ class Game:
         self.returnerRallyPoints+=1
 
     def isOver(self):
-        return (self.serverRallyPoints>3 and Game.__twoPointsAhead(self.serverRallyPoints, self.returnerRallyPoints) or
-            self.returnerRallyPoints>3 and Game.__twoPointsAhead(self.returnerRallyPoints, self.serverRallyPoints))
+        return (self.serverRallyPoints>3 and Helper.twoAhead(self.serverRallyPoints, self.returnerRallyPoints) or
+            self.returnerRallyPoints>3 and Helper.twoAhead(self.returnerRallyPoints, self.serverRallyPoints))
 
     def winner(self):
         if(self.isOver()):
             return self.server if self.serverRallyPoints>self.returnerRallyPoints else self.returner
         else:
             return None
-
-    @classmethod
-    def __twoPointsAhead(cls, points, opponentPoints):
-        return points > opponentPoints + 1
 
     @classmethod
     def __ralliesToScore(cls, points, opponentPoints):

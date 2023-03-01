@@ -1,4 +1,5 @@
 import logging
+import scorer.scorer_helper as Helper
 from scorer.player import Player
 from scorer.game import Game
 
@@ -54,7 +55,7 @@ class Set:
             returnerGames = Set.__getNoOfGamesWonBy(self.games, self.returner)
             return True if \
                 (serverGames >=6 or returnerGames >=6) and \
-                (Set.__twoGamesAhead(serverGames, returnerGames) or Set.__twoGamesAhead(returnerGames, serverGames)) \
+                (Helper.twoAhead(serverGames, returnerGames) or Helper.twoAhead(returnerGames, serverGames)) \
                  else False
 
     def winner(self):
@@ -70,10 +71,6 @@ class Set:
 
     def __hasRunningGame(self) -> None:
         return False if self.__getRunningGame() is None else True
-
-    @classmethod
-    def __twoGamesAhead(cls, myGames:int, opponentGames:int) -> bool:
-        return myGames > opponentGames + 1
 
     @classmethod
     def __getNoOfGamesWonBy(cls, allGames, player: Player) -> int:

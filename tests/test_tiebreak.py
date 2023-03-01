@@ -3,7 +3,7 @@ import scorer
 
 from scorer.tiebreak import Tiebreak
 from scorer.player import Player
-from tests.helper import Helper
+from tests.scorer_test_helper import ScorerTestHelper
 
 
 class TestTiebreak(unittest.TestCase):

@@ -3,7 +3,7 @@ import scorer
 
 from scorer.game import Game
 from scorer.player import Player
-from tests.helper import Helper
+from tests.scorer_test_helper import ScorerTestHelper
 
 
 class TestGame(unittest.TestCase):
@@ -21,8 +21,8 @@ class TestGame(unittest.TestCase):
         self.assertEqual(self.testGame.returner, TestGame.RETURNER)  
     
     def test_game_over(self):
-        Helper.scoreXtimesReturner(self.testGame, 3)
-        Helper.scoreXtimesServer(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 4)
         self.assertFalse(self.testGame.isOver())
         self.testGame.rallyForServer()
         self.assertTrue(self.testGame.isOver())
@@ -46,73 +46,73 @@ class TestGame(unittest.TestCase):
 
     def test_score_15_30(self):
         self.testGame.rallyForServer()
-        Helper.scoreXtimesReturner(self.testGame, 2)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 2)
         self.assertEqual(self.testGame.score(), TestGame.__format_score((15, 30)))
 
     def test_score_30_all(self):
-        Helper.scoreXtimesServer(self.testGame, 2)
-        Helper.scoreXtimesReturner(self.testGame, 2)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 2)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 2)
         self.assertEqual(self.testGame.score(), TestGame.__format_score((30, 30)))
 
     def test_score_40_30(self):
-        Helper.scoreXtimesReturner(self.testGame, 2)
-        Helper.scoreXtimesServer(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 2)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 3)
         self.assertEqual(self.testGame.score(), TestGame.__format_score((40, 30)))
 
     def test_winner_is_server(self):
-        Helper.scoreXtimesServer(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 4)
         self.assertEqual(self.testGame.winner(), TestGame.SERVER)
 
     def test_winner_is_returner(self):
-        Helper.scoreXtimesReturner(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 4)
         self.assertEqual(self.testGame.winner(), TestGame.RETURNER)
 
     def test_score_deuce(self):
-        Helper.scoreXtimesServer(self.testGame, 3)
-        Helper.scoreXtimesReturner(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 3)
         self.assertEqual(self.testGame.score(), TestGame.__format_score(("D", "D")))
 
     def test_score_deuce_long_game(self):
-        Helper.scoreXtimesServer(self.testGame, 3)
-        Helper.scoreXtimesReturner(self.testGame, 4)
-        Helper.scoreXtimesServer(self.testGame, 2)
-        Helper.scoreXtimesReturner(self.testGame, 1)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 2)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 1)
         self.assertEqual(self.testGame.score(), TestGame.__format_score(("D", "D")))
 
     def test_score_advantage_server(self):
-        Helper.scoreXtimesReturner(self.testGame, 3)
-        Helper.scoreXtimesServer(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 4)
         self.assertEqual(self.testGame.score(), TestGame.__format_score(("A", 40)))
 
     def test_score_advantage_retruner(self):
-        Helper.scoreXtimesServer(self.testGame, 3)
-        Helper.scoreXtimesReturner(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 4)
         self.assertEqual(self.testGame.score(), TestGame.__format_score((40, "A")))
 
     def test_score_advantage_long_game(self):
-        Helper.scoreXtimesServer(self.testGame, 3)
-        Helper.scoreXtimesReturner(self.testGame, 4)
-        Helper.scoreXtimesServer(self.testGame, 2)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 3)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 2)
         self.assertEqual(self.testGame.score(), TestGame.__format_score(("A", 40)))
 
     def test_score_15_30(self):
         self.testGame.rallyForServer()
-        Helper.scoreXtimesReturner(self.testGame, 2)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 2)
         self.assertEqual(self.testGame.score(), TestGame.__format_score((15, 30)))
 
     def test_score_is_none_on_terminated_game(self):
-        Helper.scoreXtimesReturner(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesReturner(self.testGame, 4)
         self.assertIsNone(self.testGame.score())
 
     def test_error_score_on_terminated_game(self):
-        Helper.scoreXtimesServer(self.testGame, 4)
+        ScorerTestHelper.scoreXtimesServer(self.testGame, 4)
         #terminated
         with self.assertRaises(ValueError):
             self.testGame.rallyForReturner()
 
     @classmethod
     def __format_score(cls, score):
-        return {Helper.GAME_KEY:score}
+        return {ScorerTestHelper.GAME_KEY:score}
 
 if __name__ == '__main__':
     unittest.main()
