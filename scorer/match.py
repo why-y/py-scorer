@@ -64,7 +64,8 @@ class Match:
             return None           
 
     def __getRunningSet(self) -> Set:
-        return None if len(self.sets)==0 or self.sets[-1].isOver() else self.sets[-1]
+        latestSet = self.sets[-1]
+        return None if latestSet.isOver() else latestSet
 
     def __hasRunningSet(self) -> Set:
         return False if self.__getRunningSet() is None else True

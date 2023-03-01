@@ -13,12 +13,12 @@ class ScorerTestHelper:
         pass
 
     @classmethod
-    def scoreXtimesServer(cls, scoreUnit, noOfRallies):
+    def scoreXtimesServer(cls, scoreUnit:int, noOfRallies:int):
         for _ in range(noOfRallies):
             scoreUnit.rallyForServer()
 
     @classmethod
-    def scoreXtimesReturner(cls, scoreUnit, noOfRallies):
+    def scoreXtimesReturner(cls, scoreUnit:int, noOfRallies:int):
         for _ in range(noOfRallies):
             scoreUnit.rallyForReturner()
 

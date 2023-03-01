@@ -10,22 +10,29 @@ class Set:
 
     KEY = "Set"
 
-    def __init__(self, server: Player, returner: Player) -> None:
+    def __init__(self, server: Player, returner: Player, with_tiebreak = True) -> None:
         self.server = server
         self.returner = returner
+        self.with_tiebreak = with_tiebreak
         self.games = []
         self.games.append(Game(self.server, self.returner))
 
+    def has_tiebreak(self):
+        return self.with_tiebreak
+
     def score(self):
-        noOfGamesWonByServer = Set.__getNoOfGamesWonBy(self.games, self.server)
-        noOfGamesWonByReturner = Set.__getNoOfGamesWonBy(self.games, self.returner)
-        score = {
-            Set.KEY : (noOfGamesWonByServer, noOfGamesWonByReturner)
+        noOfGamesWonByServer = Set.__getNoOfGamesWonBy(self.server, self.games)
+        noOfGamesWonByReturner = Set.__getNoOfGamesWonBy(self.returner, self.games)
+        setScore = {
+            Set.KEY : (
+                noOfGamesWonByServer, 
+                noOfGamesWonByReturner
+                )
         }
         runningGame = self.__getRunningGame()
         gameScore = runningGame.score() if runningGame is not None else {Game.KEY:(0,0)}
-        score.update(gameScore)
-        return score
+        setScore.update(gameScore)
+        return setScore
     
     def rallyForServer(self) -> None:
         
@@ -51,8 +58,8 @@ class Set:
         if(self.__hasRunningGame()):
             return False
         else:
-            serverGames = Set.__getNoOfGamesWonBy(self.games, self.server)
-            returnerGames = Set.__getNoOfGamesWonBy(self.games, self.returner)
+            serverGames = Set.__getNoOfGamesWonBy(self.server, self.games)
+            returnerGames = Set.__getNoOfGamesWonBy(self.returner, self.games)
             return True if \
                 (serverGames >=6 or returnerGames >=6) and \
                 (Helper.twoAhead(serverGames, returnerGames) or Helper.twoAhead(returnerGames, serverGames)) \
@@ -60,20 +67,21 @@ class Set:
 
     def winner(self):
         if(self.isOver()):
-            serverGames = Set.__getNoOfGamesWonBy(self.games, self.server)
-            returnerGames = Set.__getNoOfGamesWonBy(self.games, self.returner)
+            serverGames = Set.__getNoOfGamesWonBy(self.server, self.games)
+            returnerGames = Set.__getNoOfGamesWonBy(self.returner, self.games)
             return self.server if serverGames>returnerGames else self.returner
         else:
             return None           
 
     def __getRunningGame(self) -> Game:
-        return None if len(self.games)==0 or self.games[-1].isOver() else self.games[-1]
+        latestGame = self.games[-1]
+        return None if latestGame.isOver() else latestGame
 
     def __hasRunningGame(self) -> None:
         return False if self.__getRunningGame() is None else True
 
     @classmethod
-    def __getNoOfGamesWonBy(cls, allGames, player: Player) -> int:
+    def __getNoOfGamesWonBy(cls, player: Player, allGames) -> int:
         noOfGamesWon = 0
         for game in allGames:
             if game.winner() == player:
