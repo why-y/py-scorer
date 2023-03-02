@@ -57,7 +57,7 @@ class TestSet(unittest.TestCase):
 
     def test_score_1_0(self):
         ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        self.assertEqual(self.testLongSet.score(), TestSet.__format_set_game((1, 0),(0,0)))
+        self.assertEqual(self.testLongSet.score(), TestSet.__format_set_game((1, 0), (0, 0)))
     
     # Tiebreak tests
     def test_longset_has_no_tiebreak(self):
@@ -68,14 +68,13 @@ class TestSet(unittest.TestCase):
         self.assertTrue(testSet.has_tiebreak())
         
     def test_start_tiebreak_at_6_6(self):
-        testSet = Set(TestSet.SERVER, TestSet.RETURNER, False)
+        testSet = Set(TestSet.SERVER, TestSet.RETURNER)
         ScorerTestHelper.scoreXtimesFor(testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         ScorerTestHelper.scoreXtimesFor(testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         ScorerTestHelper.scoreXtimesFor(testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        # 6:6
+        # 6:6 -> next rally in tiebreak
         testSet.rallyPointFor(TestSet.SERVER)
-        #self.assertEqual(testSet.score(), TestSet.__format_set_tiebreak((6, 6), (1,0)))
-
+        self.assertEqual(testSet.score(), TestSet.__format_set_tiebreak((6, 6), (1,0)))
 
     @classmethod
     def __format_set_game(cls, set_score, game_score):

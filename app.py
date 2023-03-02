@@ -21,6 +21,7 @@ def format_set(set, pos) -> str:
     return " {} |".format(str(set.score().get("Set")[pos]).rjust(1,' '))
 
 def format_game(currentSet, pos) -> str:
+    print("GRY", str(currentSet.score()))
     return " {} |".format(str(currentSet.score().get("Game")[pos]).rjust(2,' '))
 
 def app():
@@ -35,10 +36,10 @@ def app():
     while not match.isOver():
         rallyFor = input(' -> enter [a] to score for {} or [b] to score for {}  : '.format(serverName, returnerName))
         if(rallyFor == 'a'):
-            match.rallyForServer()
+            match.rallyPointFor(match.server)
             print(match_to_str(match))
         elif(rallyFor == 'b'):
-            match.rallyForReturner()
+            match.rallyPointFor(match.returner)
             print(match_to_str(match))
         elif(rallyFor.lower() == 'exit' or rallyFor.lower() == 'quit'):
             quit()

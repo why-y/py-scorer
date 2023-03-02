@@ -29,11 +29,14 @@ class Match:
 
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated match!")
-        
+
         if not (self.__hasRunningSet()):
             self.sets.append(Set(self.server, self.returner))
 
         self.__getRunningSet().rallyPointFor(player)
+
+        if not self.isOver() and not self.__hasRunningSet(): self.sets.append(Set(self.server, self.returner))
+
 
     def isOver(self):
         if(self.__hasRunningSet()):
