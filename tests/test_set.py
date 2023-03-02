@@ -23,40 +23,40 @@ class TestSet(unittest.TestCase):
         self.assertFalse(self.testLongSet.isOver())
 
     def test_6_0_is_over(self):
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.testLongSet.isOver())
 
     def test_6_0_winner_is_Tom(self):
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertEqual(self.testLongSet.winner(), self.testLongSet.server)
 
     def test_cannot_score_terminated_set(self):
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         #terminated
         with self.assertRaises(ValueError):
-            self.testLongSet.rallyForServer()
+            self.testLongSet.rallyPointFor(TestSet.SERVER)
 
     def test_6_5_is_not_over(self):
-        ScorerTestHelper.scoreXtimesReturner(self.testLongSet, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, 6*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, 6*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertFalse(self.testLongSet.isOver())
 
     def test_5_7_is_over(self):
-        ScorerTestHelper.scoreXtimesReturner(self.testLongSet, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, 7*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, 7*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertTrue(self.testLongSet.isOver())
 
     def test_7_6_is_not_over(self):
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesReturner(self.testLongSet, 6*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.RETURNER, 6*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertFalse(self.testLongSet.isOver())
 
     def test_start_set_score_0_0(self):
         self.assertEqual(self.testLongSet.score(), TestSet.__format_set_game((0, 0),(0,0)))
 
     def test_score_1_0(self):
-        ScorerTestHelper.scoreXtimesServer(self.testLongSet, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         self.assertEqual(self.testLongSet.score(), TestSet.__format_set_game((1, 0),(0,0)))
     
     # Tiebreak tests
@@ -69,12 +69,11 @@ class TestSet(unittest.TestCase):
         
     def test_start_tiebreak_at_6_6(self):
         testSet = Set(TestSet.SERVER, TestSet.RETURNER, False)
-        ScorerTestHelper.scoreXtimesReturner(testSet, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesServer(testSet, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesReturner(testSet, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         # 6:6
-        testSet.rallyForServer()
-        pass
+        testSet.rallyPointFor(TestSet.SERVER)
         #self.assertEqual(testSet.score(), TestSet.__format_set_tiebreak((6, 6), (1,0)))
 
 

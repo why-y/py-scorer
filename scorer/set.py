@@ -34,25 +34,15 @@ class Set:
         setScore.update(gameScore)
         return setScore
     
-    def rallyForServer(self) -> None:
-        
+    def rallyPointFor(self, player:Player) -> None:
+
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated set!")
-        
+
         if not (self.__hasRunningGame()):
             self.games.append(Game(self.server, self.returner))
 
-        self.__getRunningGame().rallyForServer()
- 
-    def rallyForReturner(self) -> None:
-        
-        if(self.isOver()):
-            raise ValueError("Cannot score on a terminated set!")
-        
-        if not (self.__hasRunningGame()):
-            self.games.append(Game(self.server, self.returner))
-
-        self.__getRunningGame().rallyForReturner()
+        self.__getRunningGame().rallyPointFor(player)
 
     def isOver(self):
         if(self.__hasRunningGame()):

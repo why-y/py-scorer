@@ -24,51 +24,51 @@ class TestMatch(unittest.TestCase):
         self.assertFalse(self.testMatch.isOver())
 
     def test_2_0_is_over(self):
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.testMatch.isOver())
 
     def test_2_0_is_not_over_on_best_of_five(self):
         bestOfFiveMatch = Match(TestMatch.SERVER, TestMatch.RETURNER, 5)
-        ScorerTestHelper.scoreXtimesServer(bestOfFiveMatch, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(bestOfFiveMatch, TestMatch.SERVER, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertFalse(bestOfFiveMatch.isOver())
 
     def test_3_0_is_over_on_best_of_five(self):
         bestOfFiveMatch = Match(TestMatch.SERVER, TestMatch.RETURNER, 5)
-        ScorerTestHelper.scoreXtimesServer(bestOfFiveMatch, 3*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(bestOfFiveMatch, TestMatch.SERVER, 3*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(bestOfFiveMatch.isOver())
 
     def test_2_1_winner_is_tom(self):
-        ScorerTestHelper.scoreXtimesReturner(self.testMatch, 1*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, 1*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.testMatch.isOver())
 
     def test_cannot_score_terminated_match(self):
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         #terminated
         with self.assertRaises(ValueError):
-            self.testMatch.rallyForServer()
+            self.testMatch.rallyPointFor(TestMatch.SERVER)
 
     def test_1_1_is_not_over(self):
-        ScorerTestHelper.scoreXtimesReturner(self.testMatch, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertFalse(self.testMatch.isOver())
 
     def test_2_1_is_over(self):
-        ScorerTestHelper.scoreXtimesReturner(self.testMatch, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.testMatch.isOver())
 
     def test_6_0__6_0_winner_is_Tom(self):
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertEqual(self.testMatch.winner(), self.SERVER)
     
     def test_score_6_0__0_6__4_3__15_30(self):
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesReturner(self.testMatch, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, 4*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesReturner(self.testMatch, 3*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesServer(self.testMatch, 1)
-        ScorerTestHelper.scoreXtimesReturner(self.testMatch, 2)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 4*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, 3*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 1)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, 2)
         self.assertEqual(
             {
                 "Set1":(6,0),

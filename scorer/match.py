@@ -25,25 +25,15 @@ class Match:
             score.update({Game.KEY:set.score().get(Game.KEY)})
         return score
 
-    def rallyForServer(self) -> None:
-        
+    def rallyPointFor(self, player:Player) -> None:
+
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated match!")
         
         if not (self.__hasRunningSet()):
             self.sets.append(Set(self.server, self.returner))
 
-        self.__getRunningSet().rallyForServer()
- 
-    def rallyForReturner(self) -> None:
-        
-        if(self.isOver()):
-            raise ValueError("Cannot score on a terminated match!")
-        
-        if not (self.__hasRunningSet()):
-            self.sets.append(Set(self.server, self.returner))
-
-        self.__getRunningSet().rallyForReturner()
+        self.__getRunningSet().rallyPointFor(player)
 
     def isOver(self):
         if(self.__hasRunningSet()):

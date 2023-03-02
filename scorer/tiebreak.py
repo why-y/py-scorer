@@ -9,31 +9,33 @@ class Tiebreak:
     def __init__(self, server: Player, returner: Player) -> None:
         self.server = server
         self.returner = returner
-        self.serverRallyPoints = 0
-        self.returnerRallyPoints = 0
+        self.rallyPoints = {server:0, returner:0}
 
     def score(self):
-        return {Tiebreak.KEY:(self.serverRallyPoints, self.returnerRallyPoints)}
+        return {Tiebreak.KEY:(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())}
 
-    def rallyForServer(self) -> None:
+    def rallyPointFor(self, player:Player) -> None:
         if(self.isOver()):
-            raise ValueError("Cannot score on a terminated tiebreak!")
-        self.serverRallyPoints +=1
- 
-    def rallyForReturner(self) -> None:       
-        if(self.isOver()):
-            raise ValueError("Cannot score on a terminated tiebreak!")
-        self.returnerRallyPoints +=1
+            raise ValueError("Cannot score on a terminated game!")
+        self.rallyPoints[player] += 1
 
     def isOver(self):
-        return self.serverRallyPoints > 6 and Helper.twoAhead(self.serverRallyPoints, self.returnerRallyPoints) \
-            or self.returnerRallyPoints > 6 and Helper.twoAhead(self.returnerRallyPoints, self.serverRallyPoints) 
+        return max(self.rallyPoints.values()) > 6 and Helper.twoAppart(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())
 
     def winner(self):
         if(self.isOver()):
-            return self.server if self.serverRallyPoints > self.returnerRallyPoints else self.returner
+            return self.__leadingPlayer()
         else:
-            return None           
+            return None
+
+    def __leadingPlayer(self) -> Player:
+        return self.server if self.__getServerRallyPoints() > self.__getReturnerRallyPoints() else self.returner
+    
+    def __getServerRallyPoints(self) -> int:
+        return self.rallyPoints.get(self.server)
+
+    def __getReturnerRallyPoints(self) -> int:
+        return self.rallyPoints.get(self.returner)
 
 
 

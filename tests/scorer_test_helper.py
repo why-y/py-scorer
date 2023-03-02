@@ -1,3 +1,4 @@
+from scorer.player import Player
 
 class ScorerTestHelper:
     '''A helper class for tennis scorer unit tests'''
@@ -13,12 +14,7 @@ class ScorerTestHelper:
         pass
 
     @classmethod
-    def scoreXtimesServer(cls, scoreUnit:int, noOfRallies:int):
+    def scoreXtimesFor(cls, scoreUnit, player:Player, noOfRallies:int):
         for _ in range(noOfRallies):
-            scoreUnit.rallyForServer()
-
-    @classmethod
-    def scoreXtimesReturner(cls, scoreUnit:int, noOfRallies:int):
-        for _ in range(noOfRallies):
-            scoreUnit.rallyForReturner()
+            scoreUnit.rallyPointFor(player)
 

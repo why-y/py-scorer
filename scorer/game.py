@@ -9,39 +9,42 @@ class Game:
     def __init__(self, server: Player, returner: Player) -> None:
         self.server = server
         self.returner = returner
-        self.serverRallyPoints = 0
-        self.returnerRallyPoints = 0
+        self.rallyPoints = {server:0, returner:0}
 
     def score(self):
         if(self.isOver()):
             return None
         else:
-            serverScore = self.__ralliesToScore(self.serverRallyPoints, self.returnerRallyPoints)
-            returnerScore = self.__ralliesToScore(self.returnerRallyPoints, self.serverRallyPoints)
+            serverScore = self.__ralliesToScore(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())
+            returnerScore = self.__ralliesToScore(self.__getReturnerRallyPoints(), self.__getServerRallyPoints())
             return {Game.KEY : (serverScore, returnerScore)}
 
-    def rallyForServer(self) -> None:
+    def rallyPointFor(self, player:Player) -> None:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated game!")
-        self.serverRallyPoints+=1
-        
-    def rallyForReturner(self) -> None:
-        if(self.isOver()):
-            raise ValueError("Cannot score on a terminated game!")
-        self.returnerRallyPoints+=1
+        self.rallyPoints[player] += 1
 
     def isOver(self):
-        return (self.serverRallyPoints>3 and Helper.twoAhead(self.serverRallyPoints, self.returnerRallyPoints) or
-            self.returnerRallyPoints>3 and Helper.twoAhead(self.returnerRallyPoints, self.serverRallyPoints))
+        return max(self.rallyPoints.values())>3 and Helper.twoAppart(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())
 
     def winner(self):
         if(self.isOver()):
-            return self.server if self.serverRallyPoints>self.returnerRallyPoints else self.returner
+            return self.__leadingPlayer()
         else:
             return None
 
+    def __leadingPlayer(self) -> Player:
+        return self.server if self.__getServerRallyPoints() > self.__getReturnerRallyPoints() else self.returner
+    
+    def __getServerRallyPoints(self) -> int:
+        return self.rallyPoints.get(self.server)
+
+    def __getReturnerRallyPoints(self) -> int:
+        return self.rallyPoints.get(self.returner)
+
+
     @classmethod
-    def __ralliesToScore(cls, points, opponentPoints):
+    def __ralliesToScore(cls, points, opponentPoints) -> str:
         if(points < 3):  
             # 0 is 0, 1 is 15, 2 is 30
             return points * 15
