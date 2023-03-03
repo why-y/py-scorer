@@ -21,8 +21,8 @@ def format_set(set, pos) -> str:
     return " {} |".format(str(set.score().get("Set")[pos]).rjust(1,' '))
 
 def format_game(currentSet, pos) -> str:
-    print("GRY", str(currentSet.score()))
-    return " {} |".format(str(currentSet.score().get("Game")[pos]).rjust(2,' '))
+    gamePoints = str(currentSet.score().get("Game")[pos]) if currentSet.score().get("Game") is not None else " "
+    return " {} |".format(gamePoints).rjust(2,' ')
 
 def app():
     serverName = input('Enter the servers name   : ')
@@ -30,7 +30,7 @@ def app():
     print('Start Match between {} and {}.'.format(serverName, returnerName))
     print('{} serves.'.format(serverName))
 
-    match = Match(Player(serverName), Player(returnerName), 5)
+    match = Match(Player(serverName), Player(returnerName), 3)
     print(match_to_str(match))
 
     while not match.isOver():

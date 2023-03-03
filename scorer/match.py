@@ -37,7 +37,6 @@ class Match:
 
         if not self.isOver() and not self.__hasRunningSet(): self.sets.append(Set(self.server, self.returner))
 
-
     def isOver(self):
         if(self.__hasRunningSet()):
             return False
