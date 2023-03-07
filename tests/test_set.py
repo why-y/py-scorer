@@ -11,6 +11,7 @@ class TestSet(unittest.TestCase):
     RETURNER = Player("Eric")
 
     def setUp(self) -> None:
+        self.testSet = Set(TestSet.SERVER, TestSet.RETURNER)
         self.testLongSet = Set(TestSet.SERVER, TestSet.RETURNER, False)
 
     def test_start_set_server_is_tom(self):
@@ -64,17 +65,24 @@ class TestSet(unittest.TestCase):
         self.assertFalse(self.testLongSet.has_tiebreak())
 
     def test_defaultset_has_tiebreak(self):
-        testSet = Set(TestSet.SERVER, TestSet.RETURNER)
-        self.assertTrue(testSet.has_tiebreak())
+        self.assertTrue(self.testSet.has_tiebreak())
         
     def test_start_tiebreak_at_6_6(self):
-        testSet = Set(TestSet.SERVER, TestSet.RETURNER)
-        ScorerTestHelper.scoreXtimesFor(testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesFor(testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesFor(testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         # 6:6 -> next rally in tiebreak
-        testSet.rallyPointFor(TestSet.SERVER)
-        self.assertEqual(testSet.score(), TestSet.__format_set_tiebreak((6, 6), (1,0)))
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, 1)
+        self.assertEqual(self.testSet.score(), TestSet.__format_set_tiebreak((6, 6), (1,0)))
+
+    def test_tom_wins_set_in_tiebreak_6_6__7_0(self):
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        # 6:6 -> next rally in tiebreak
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+        self.assertEqual(self.testSet.score(), TestSet.__format_set_tiebreak((7, 6), (7, 0)))
+
 
     @classmethod
     def __format_set_game(cls, set_score, game_score):
@@ -84,7 +92,7 @@ class TestSet(unittest.TestCase):
         }
 
     @classmethod
-    def __format_set_tiebreak(cls, set_score, tiebreak_score):
+    def __format_set_tiebreak(cls, set_score, tiebreak_score=(0, 0)):
         return {
             ScorerTestHelper.SET_KEY:set_score,
             ScorerTestHelper.TIEBREAK_KEY:tiebreak_score

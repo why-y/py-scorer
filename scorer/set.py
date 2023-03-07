@@ -24,15 +24,21 @@ class Set:
     def score(self):
         setScore = {}
         setScore.update(self.__scoreOfTerminatedGames())
-        if self.__hasRunningGame(): setScore.update(self.__getRunningGame().score()) 
-        if self.__hasRunningTiebreak(): setScore.update(self.__getRunningTiebreak().score())
+        if self.__hasRunningGame(): setScore.update(self.__getRunningGame().score())
+        if self.tiebreak is not None: setScore.update(self.tiebreak.score())
         return setScore
 
     def __scoreOfTerminatedGames(self):
+        scoreServer = self.__getNoOfGamesWonBy(self.server)
+        scoreReturner = self.__getNoOfGamesWonBy(self.returner)
+        if self.tiebreak is not None and self.tiebreak.isOver():
+            if self.tiebreak.winner() is self.server: scoreServer += 1
+            if self.tiebreak.winner() is self.returner: scoreReturner += 1
+        
         return {
             Set.KEY : (
-                self.__getNoOfGamesWonBy(self.server), 
-                self.__getNoOfGamesWonBy(self.returner)
+                scoreServer, 
+                scoreReturner
                 )
         }
         
@@ -54,7 +60,7 @@ class Set:
             self.games.append(nextGame)
 
     def isOver(self):
-        if(self.__hasRunningGame()):
+        if(self.__hasRunningGame() or self.__hasRunningTiebreak()):
             return False
         else:
             serverGames = self.__getNoOfGamesWonBy(self.server)
