@@ -1,7 +1,15 @@
+import logging
+
 from scorer.match import Match
 from scorer.player import Player
 
+logging.basicConfig(level=logging.DEBUG)
+
 def match_to_str(match) -> str:
+    return match.score()
+
+def __match_to_str(match) -> str:
+    
     # name
     serverLine   = format_name(match.server.name)
     returnerLine = format_name(match.returner.name)

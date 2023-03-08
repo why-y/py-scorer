@@ -24,8 +24,8 @@ class Set:
     def score(self):
         setScore = {}
         setScore.update(self.__scoreOfTerminatedGames())
-        if self.__hasRunningGame(): setScore.update(self.__getRunningGame().score())
-        if self.tiebreak is not None: setScore.update(self.tiebreak.score())
+        if self.__hasRunningGame(): setScore.get(Set.KEY).update(self.__getRunningGame().score())
+        if self.tiebreak is not None: setScore.get(Set.KEY).update(self.tiebreak.score())
         return setScore
 
     def __scoreOfTerminatedGames(self):
@@ -34,12 +34,11 @@ class Set:
         if self.tiebreak is not None and self.tiebreak.isOver():
             if self.tiebreak.winner() is self.server: scoreServer += 1
             if self.tiebreak.winner() is self.returner: scoreReturner += 1
-        
         return {
-            Set.KEY : (
-                scoreServer, 
-                scoreReturner
-                )
+            Set.KEY : {
+                self.server.name: scoreServer, 
+                self.returner.name: scoreReturner            
+            }
         }
         
     def rallyPointFor(self, player:Player) -> None:
@@ -62,6 +61,8 @@ class Set:
     def isOver(self):
         if(self.__hasRunningGame() or self.__hasRunningTiebreak()):
             return False
+        elif self.__hasTerminatedTiebreak():
+            return True
         else:
             serverGames = self.__getNoOfGamesWonBy(self.server)
             returnerGames = self.__getNoOfGamesWonBy(self.returner)
@@ -88,11 +89,14 @@ class Set:
     def __needsTiebreak(self) -> bool:
         return self.with_tiebreak and self.__getNoOfGamesWonBy(self.server)==6 and self.__getNoOfGamesWonBy(self.returner)==6
 
-    def __getRunningTiebreak(self) -> Game:
+    def __getRunningTiebreak(self) -> Tiebreak:
         return None if self.tiebreak is None or self.tiebreak.isOver() else self.tiebreak
 
-    def __hasRunningTiebreak(self) -> None:
+    def __hasRunningTiebreak(self) -> bool:
         return False if self.__getRunningTiebreak() is None else True
+    
+    def __hasTerminatedTiebreak(self) -> bool:
+        return True if self.tiebreak is not None and self.tiebreak.isOver() else False
 
     def __getNoOfGamesWonBy(self, player: Player) -> int:
         noOfGamesWon = 0

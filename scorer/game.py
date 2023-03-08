@@ -17,7 +17,12 @@ class Game:
         else:
             serverScore = self.__ralliesToScore(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())
             returnerScore = self.__ralliesToScore(self.__getReturnerRallyPoints(), self.__getServerRallyPoints())
-            return {Game.KEY : (serverScore, returnerScore)}
+            return {
+                Game.KEY : {
+                    self.server.name : serverScore, 
+                    self.returner.name : returnerScore
+                }
+            }
 
     def rallyPointFor(self, player:Player) -> None:
         if(self.isOver()):

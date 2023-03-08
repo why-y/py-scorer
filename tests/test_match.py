@@ -71,11 +71,55 @@ class TestMatch(unittest.TestCase):
         ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, 2)
         self.assertEqual(
             {
-                "Set1":(6,0),
-                "Set2":(0,6),
-                "Set3":(4,3),
-                "Game":(15,30)            
+                "Set1":{
+                    TestMatch.SERVER.name: 6,
+                    TestMatch.RETURNER.name: 0
+                },
+                "Set2":{
+                    TestMatch.SERVER.name: 0,
+                    TestMatch.RETURNER.name: 6
+                },
+                "Set3":{
+                    TestMatch.SERVER.name: 4,
+                    TestMatch.RETURNER.name: 3,
+                    ScorerTestHelper.GAME_KEY: {
+                        TestMatch.SERVER.name: 15,
+                        TestMatch.RETURNER.name: 30                     
+                    }
+                }
             }, self.testMatch.score())
+        
+    def test_score_set_after_tiebreak_7_6__3_1(self):
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        # 6:6 -> tiebreak
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+        # 7:6 -> next set
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.SERVER, 3*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testMatch, TestMatch.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        # 7:6, 3:1 -> check
+        self.assertEqual(
+            {
+                "Set1":{
+                    TestMatch.SERVER.name: 7,
+                    TestMatch.RETURNER.name: 6,
+                    ScorerTestHelper.TIEBREAK_KEY: {
+                        TestMatch.SERVER.name: 7,
+                        TestMatch.RETURNER.name: 0,    
+                    }
+                },
+                "Set2":{
+                    TestMatch.SERVER.name: 3,
+                    TestMatch.RETURNER.name: 1,
+                    ScorerTestHelper.GAME_KEY: {
+                        TestMatch.SERVER.name: 0,
+                        TestMatch.RETURNER.name: 0                     
+                    }
+                }
+            }, self.testMatch.score())
+
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -50,16 +50,20 @@ class TestTiebreak(unittest.TestCase):
             self.testTiebreak.rallyPointFor(TestTiebreak.SERVER)
 
     def test_start_tiebreak_score_0_0(self):
-        self.assertEqual(self.testTiebreak.score(), TestTiebreak.__format_score((0, 0)))
+        self.assertEqual(self.testTiebreak.score(), TestTiebreak.__format_score(self.testTiebreak.server, 0, self.testTiebreak.returner, 0))
 
     def test_score_1_0(self):
         self.testTiebreak.rallyPointFor(TestTiebreak.SERVER)
-        self.assertEqual(self.testTiebreak.score(), TestTiebreak.__format_score((1, 0)))
+        self.assertEqual(self.testTiebreak.score(), TestTiebreak.__format_score(self.testTiebreak.server, 1, self.testTiebreak.returner, 0))
 
     @classmethod
-    def __format_score(cls, score):
-        return {ScorerTestHelper.TIEBREAK_KEY:score}
-   
+    def __format_score(cls, server:Player, serverScore, returner:Player, returnerScore):
+        return {
+            ScorerTestHelper.TIEBREAK_KEY: {
+                server.name: serverScore,
+                returner.name: returnerScore
+            }
+        }   
 
 if __name__ == '__main__':
     unittest.main()

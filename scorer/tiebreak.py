@@ -12,7 +12,12 @@ class Tiebreak:
         self.rallyPoints = {server:0, returner:0}
 
     def score(self):
-        return {Tiebreak.KEY:(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())}
+        return {
+            Tiebreak.KEY : {
+                self.server.name : self.__getServerRallyPoints(), 
+                self.returner.name : self.__getReturnerRallyPoints()
+            }
+        }    
 
     def rallyPointFor(self, player:Player) -> None:
         if(self.isOver()):
@@ -23,10 +28,7 @@ class Tiebreak:
         return max(self.rallyPoints.values()) > 6 and Helper.twoAppart(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())
 
     def winner(self):
-        if(self.isOver()):
-            return self.__leadingPlayer()
-        else:
-            return None
+        return self.__leadingPlayer() if self.isOver() else None
 
     def __leadingPlayer(self) -> Player:
         return self.server if self.__getServerRallyPoints() > self.__getReturnerRallyPoints() else self.returner

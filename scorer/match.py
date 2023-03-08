@@ -2,18 +2,20 @@ import logging
 from scorer.player import Player
 from scorer.set import Set
 from scorer.game import Game
+from scorer.tiebreak import Tiebreak
 
 logging.basicConfig(level=logging.DEBUG)
 
 class Match:
     '''A class to score a tennis match'''
 
-    def __init__(self, server: Player, returner: Player, bestOf=3) -> None:
+    def __init__(self, server: Player, returner: Player, bestOf=3, withTiebreaks=True) -> None:
         self.server = server
         self.returner = returner
         self.sets = []
         self.sets.append(Set(server, returner))
         self.bestOf = bestOf
+        self.withTiebreak = withTiebreaks
 
     def score(self):
         score = {}
@@ -22,19 +24,12 @@ class Match:
             setCounter+=1
             setKey = Set.KEY + str(setCounter)
             score.update({setKey:set.score().get(Set.KEY)})
-            score.update({Game.KEY:set.score().get(Game.KEY)})
         return score
 
     def rallyPointFor(self, player:Player) -> None:
-
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated match!")
-
-        if not (self.__hasRunningSet()):
-            self.sets.append(Set(self.server, self.returner))
-
         self.__getRunningSet().rallyPointFor(player)
-
         if not self.isOver() and not self.__hasRunningSet(): self.sets.append(Set(self.server, self.returner))
 
     def isOver(self):

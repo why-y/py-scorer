@@ -54,11 +54,29 @@ class TestSet(unittest.TestCase):
         self.assertFalse(self.testLongSet.isOver())
 
     def test_start_set_score_0_0(self):
-        self.assertEqual(self.testLongSet.score(), TestSet.__format_set_game((0, 0),(0,0)))
+        self.assertEqual(self.testLongSet.score(), {
+            ScorerTestHelper.SET_KEY:{
+                TestSet.SERVER.name: 0,
+                TestSet.RETURNER.name: 0,
+                ScorerTestHelper.GAME_KEY: {
+                    TestSet.SERVER.name: 0,
+                    TestSet.RETURNER.name: 0
+                }
+            }
+        })
 
     def test_score_1_0(self):
         ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        self.assertEqual(self.testLongSet.score(), TestSet.__format_set_game((1, 0), (0, 0)))
+        self.assertEqual(self.testLongSet.score(), {
+            ScorerTestHelper.SET_KEY:{
+                TestSet.SERVER.name: 1,
+                TestSet.RETURNER.name: 0,
+                ScorerTestHelper.GAME_KEY: {
+                    TestSet.SERVER.name: 0,
+                    TestSet.RETURNER.name: 0
+                }
+            }
+        })
     
     # Tiebreak tests
     def test_longset_has_no_tiebreak(self):
@@ -73,15 +91,42 @@ class TestSet(unittest.TestCase):
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         # 6:6 -> next rally in tiebreak
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, 1)
-        self.assertEqual(self.testSet.score(), TestSet.__format_set_tiebreak((6, 6), (1,0)))
-
-    def test_tom_wins_set_in_tiebreak_6_6__7_0(self):
+        self.assertEqual(self.testSet.score(), {
+            ScorerTestHelper.SET_KEY:{
+                TestSet.SERVER.name: 6,
+                TestSet.RETURNER.name: 6,
+                ScorerTestHelper.TIEBREAK_KEY: {
+                    TestSet.SERVER.name: 1,
+                    TestSet.RETURNER.name: 0
+                }
+            }
+        })
+            
+    def test_tiebreak_set_7_6__7_0_is_over(self):
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         # 6:6 -> next rally in tiebreak
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
-        self.assertEqual(self.testSet.score(), TestSet.__format_set_tiebreak((7, 6), (7, 0)))
+        # 6:6 (7:0) -> set is over
+        self.assertTrue(self.testSet.isOver())
+
+    def test_tom_wins_set_in_tiebreak_7_6__7_0(self):
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        # 6:6 -> next rally in tiebreak
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+        self.assertEqual(self.testSet.score(), {
+            ScorerTestHelper.SET_KEY:{
+                TestSet.SERVER.name: 7,
+                TestSet.RETURNER.name: 6,
+                ScorerTestHelper.TIEBREAK_KEY: {
+                    TestSet.SERVER.name: 7,
+                    TestSet.RETURNER.name: 0
+                }
+            }
+        })
 
 
     @classmethod
@@ -89,13 +134,6 @@ class TestSet(unittest.TestCase):
         return {
             ScorerTestHelper.SET_KEY:set_score,
             ScorerTestHelper.GAME_KEY:game_score
-        }
-
-    @classmethod
-    def __format_set_tiebreak(cls, set_score, tiebreak_score=(0, 0)):
-        return {
-            ScorerTestHelper.SET_KEY:set_score,
-            ScorerTestHelper.TIEBREAK_KEY:tiebreak_score
         }
 
 
