@@ -14,10 +14,10 @@ class TestSet(unittest.TestCase):
         self.testSet = Set(TestSet.SERVER, TestSet.RETURNER)
         self.testLongSet = Set(TestSet.SERVER, TestSet.RETURNER, False)
 
-    def test_start_set_server_is_tom(self):
+    def test_start_set_server_is_server(self):
         self.assertEqual(self.testLongSet.server, TestSet.SERVER)  
     
-    def test_start_set_returner_is_eric(self):
+    def test_start_set_returner_is_returner(self):
         self.assertEqual(self.testLongSet.returner, TestSet.RETURNER)  
     
     def test_new_set_is_not_over(self):
@@ -27,7 +27,7 @@ class TestSet(unittest.TestCase):
         ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertTrue(self.testLongSet.isOver())
 
-    def test_6_0_winner_is_Tom(self):
+    def test_6_0_winner_is_server(self):
         ScorerTestHelper.scoreXtimesFor(self.testLongSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         self.assertEqual(self.testLongSet.winner(), self.testLongSet.server)
 
@@ -111,7 +111,16 @@ class TestSet(unittest.TestCase):
         # 6:6 (7:0) -> set is over
         self.assertTrue(self.testSet.isOver())
 
-    def test_tom_wins_set_in_tiebreak_7_6__7_0(self):
+    def test_tiebreak_set_7_6__7_0_is_winner_is_server(self):
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        # 6:6 -> next rally in tiebreak
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+        # 7:6 (7:0) -> winner is server
+        self.assertEqual(self.testSet.winner().name, TestSet.SERVER.name)
+
+    def test_tiebreak_result_7_6__7_0(self):
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)

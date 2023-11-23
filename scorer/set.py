@@ -31,9 +31,6 @@ class Set:
     def __scoreOfTerminatedGames(self):
         scoreServer = self.__getNoOfGamesWonBy(self.server)
         scoreReturner = self.__getNoOfGamesWonBy(self.returner)
-        if self.tiebreak is not None and self.tiebreak.isOver():
-            if self.tiebreak.winner() is self.server: scoreServer += 1
-            if self.tiebreak.winner() is self.returner: scoreReturner += 1
         return {
             Set.KEY : {
                 self.server.name: scoreServer, 
@@ -100,9 +97,12 @@ class Set:
 
     def __getNoOfGamesWonBy(self, player: Player) -> int:
         noOfGamesWon = 0
-        for game in self.games:
-            if game.winner() == player:
-                noOfGamesWon += 1
+        if self.__hasTerminatedTiebreak() and self.tiebreak.winner() == player:
+            noOfGamesWon = 7
+        else: 
+            for game in self.games:
+                if game.winner() == player:
+                    noOfGamesWon += 1
         return noOfGamesWon
         
 
