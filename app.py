@@ -1,35 +1,39 @@
 import logging
+import argparse
 
 from scorer.match import Match
 from scorer.player import Player
 
 logging.basicConfig(level=logging.DEBUG)
 
-def match_to_str(match) -> str:
+def __match_to_str(match) -> str:
     return match.score()
 
-def __match_to_str(match) -> str:
+def match_to_str(match) -> str:
     
     # name
     serverLine   = format_name(match.server.name)
     returnerLine = format_name(match.returner.name)
+
     # sets
     for set in match.sets:
-        serverLine +=  format_set(set, 0)
-        returnerLine +=  format_set(set, 1)
+        serverLine +=  format_set(set, match.server)
+        returnerLine +=  format_set(set, match.returner)
+
     # game
-    serverLine += format_game(match.sets[-1], 0)
-    returnerLine += format_game(match.sets[-1], 1)
+    serverLine += format_game(match.sets[-1], match.server)
+    returnerLine += format_game(match.sets[-1], match.returner)
     return "{}\n{}".format(serverLine, returnerLine)
 
 def format_name(name) -> str:
     return "{}|".format(name.ljust(20,' '))
 
-def format_set(set, pos) -> str:
-    return " {} |".format(str(set.score().get("Set")[pos]).rjust(1,' '))
+def format_set(set, player) -> str:
+    return " {} |".format(str(set.score().get("Set").get(player.name)).rjust(1,' '))
 
-def format_game(currentSet, pos) -> str:
-    gamePoints = str(currentSet.score().get("Game")[pos]) if currentSet.score().get("Game") is not None else " "
+def format_game(currentSet, player) -> str:
+    gameScore = currentSet.score().get("Set").get("Game")
+    gamePoints = str(gameScore.get(player.name)) if gameScore is not None else " "
     return " {} |".format(gamePoints).rjust(2,' ')
 
 def app():
