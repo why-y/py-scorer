@@ -56,6 +56,7 @@ def app():
         elif(rallyFor.lower() == 'exit' or rallyFor.lower() == 'quit'):
             quit()
         else:
+            print('!! Type either of: [a] or [b] to score or [exit] to terminate!')
             pass
     
     print('Match is over! {} has won by:'.format(match.winner().name))
