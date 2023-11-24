@@ -2,7 +2,7 @@ import scorer.scorer_helper as Helper
 from scorer.player import Player
 
 class Tiebreak:
-    '''A class to score a tennin tiebreak'''
+    '''A class to score a tennis tiebreak'''
 
     KEY = "Tiebreak"
 
