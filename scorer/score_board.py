@@ -24,14 +24,14 @@ class ScoreBoard:
 
     @classmethod
     def __format_name(cls, name) -> str:
-        return "{}|".format(name.ljust(20,' '))
+        return "{:<20}|".format(name)
 
     @classmethod
     def __format_set(cls, set, player) -> str:
-        return " {} |".format(str(set.score().get("Set").get(player.name)).rjust(1,' '))
+        return " {:^3} |".format(str(set.score().get("Set").get(player.name)))
 
     @classmethod
     def __format_game(cls, currentSet, player) -> str:
         gameScore = currentSet.score().get("Set").get("Game")
         gamePoints = str(gameScore.get(player.name)) if gameScore is not None else " "
-        return " {} |".format(gamePoints).rjust(3,' ')
+        return " {:>3} |".format(gamePoints)
