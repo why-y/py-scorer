@@ -12,10 +12,11 @@ def app():
  #   logger.info(commandline_args)
     server_name = commandline_args.get("server_name")
     returner_name = commandline_args.get("returner_name")
-    print('Start Match between {} and {}.'.format(server_name, returner_name))
+    bestof = commandline_args.get("bestof")
+    print('Start best of {} Match between {} and {}.'.format(bestof, server_name, returner_name))
     print('{} serves.'.format(server_name))
 
-    match = Match(Player(server_name), Player(returner_name), 3)
+    match = Match(Player(server_name), Player(returner_name), bestof)
     scoreBoard = ScoreBoard(match)
     print(scoreBoard.formatted_score())
 
