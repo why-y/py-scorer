@@ -137,6 +137,19 @@ class TestSet(unittest.TestCase):
             }
         })
 
+    def test_has_been_decided_in_tiebreak(self):
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.RETURNER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        # 6:6 -> next rally in tiebreak
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+        # 7:6 (7:0) -> set decided in tiebreak
+        self.assertTrue(self.testSet.hasBeenDecidedInTiebreak())
+
+    def test_has_not_been_decided_in_tiebreak(self):
+        ScorerTestHelper.scoreXtimesFor(self.testSet, TestSet.SERVER, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        # 6:0 -> set not decided in tiebreak
+        self.assertFalse(self.testSet.hasBeenDecidedInTiebreak())
 
     @classmethod
     def __format_set_game(cls, set_score, game_score):

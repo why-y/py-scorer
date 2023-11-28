@@ -82,6 +82,9 @@ class Set:
     def hasRunningTiebreak(self) -> bool:
         return False if self.__getRunningTiebreak() is None else True
     
+    def hasBeenDecidedInTiebreak(self) -> bool:
+        return True if self.tiebreak is not None and self.isOver() else False
+    
     def __getRunningGame(self) -> Game:
         latestGame = self.games[-1]
         return None if latestGame.isOver() else latestGame

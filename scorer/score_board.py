@@ -1,6 +1,7 @@
 from loguru import logger
 from scorer.match import Match
 from scorer.set import Set
+from scorer.player import Player
 
 class ScoreBoard:
     '''A class to nicely reveal the score of a match'''
@@ -18,6 +19,7 @@ class ScoreBoard:
         for set in self.match.sets:
             serverLine +=  ScoreBoard.__format_set(set, self.match.server)
             returnerLine += ScoreBoard.__format_set(set, self.match.returner)
+        
 
         # game/tiebreak point
         running_set = self.match.sets[-1]
@@ -30,8 +32,11 @@ class ScoreBoard:
         return "{:<20}|".format(name)
 
     @classmethod
-    def __format_set(cls, set, player) -> str:
-        return " {:^3} |".format(str(set.score().get("Set").get(player.name)))
+    def __format_set(cls, set:Set, player:Player) -> str:
+        no_of_games = str(set.score().get("Set").get(player.name))
+        if set.hasBeenDecidedInTiebreak():
+            no_of_games += "(" + str(set.score().get("Set").get("Tiebreak").get(player.name)) + ")"
+        return " {:^3} |".format(no_of_games)
 
     @classmethod
     def __format_points(cls, currentSet:Set, player) -> str:
