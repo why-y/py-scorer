@@ -24,7 +24,7 @@ class Set:
     def score(self):
         setScore = {}
         setScore.update(self.__scoreOfTerminatedGames())
-        if self.__hasRunningGame(): setScore.get(Set.KEY).update(self.__getRunningGame().score())
+        if self.hasRunningGame(): setScore.get(Set.KEY).update(self.__getRunningGame().score())
         if self.tiebreak is not None: setScore.get(Set.KEY).update(self.tiebreak.score())
         return setScore
 
@@ -41,11 +41,11 @@ class Set:
     def rallyPointFor(self, player:Player) -> None:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated set!")
-        elif(self.__hasRunningGame()):
+        elif(self.hasRunningGame()):
             self.__getRunningGame().rallyPointFor(player)
-            if not self.__hasRunningGame() and not self.isOver():
+            if not self.hasRunningGame() and not self.isOver():
                 self.tiebreak = Tiebreak(self.server, self.returner) if self.__needsTiebreak() else self.games.append(Game(self.server, self.returner))  
-        elif(self.__hasRunningTiebreak()):
+        elif(self.hasRunningTiebreak()):
             self.__getRunningTiebreak().rallyPointFor(player)
         elif(self.__needsTiebreak()):
             self.tiebreak = Tiebreak(self.server, self.returner)
@@ -56,7 +56,7 @@ class Set:
             self.games.append(nextGame)
 
     def isOver(self):
-        if(self.__hasRunningGame() or self.__hasRunningTiebreak()):
+        if(self.hasRunningGame() or self.hasRunningTiebreak()):
             return False
         elif self.__hasTerminatedTiebreak():
             return True
@@ -76,12 +76,15 @@ class Set:
         else:
             return None           
 
+    def hasRunningGame(self) -> None:
+        return False if self.__getRunningGame() is None else True
+
+    def hasRunningTiebreak(self) -> bool:
+        return False if self.__getRunningTiebreak() is None else True
+    
     def __getRunningGame(self) -> Game:
         latestGame = self.games[-1]
         return None if latestGame.isOver() else latestGame
-
-    def __hasRunningGame(self) -> None:
-        return False if self.__getRunningGame() is None else True
 
     def __needsTiebreak(self) -> bool:
         return self.with_tiebreak and self.__getNoOfGamesWonBy(self.server)==6 and self.__getNoOfGamesWonBy(self.returner)==6
@@ -89,9 +92,6 @@ class Set:
     def __getRunningTiebreak(self) -> Tiebreak:
         return None if self.tiebreak is None or self.tiebreak.isOver() else self.tiebreak
 
-    def __hasRunningTiebreak(self) -> bool:
-        return False if self.__getRunningTiebreak() is None else True
-    
     def __hasTerminatedTiebreak(self) -> bool:
         return True if self.tiebreak is not None and self.tiebreak.isOver() else False
 

@@ -9,7 +9,7 @@ COPYRIGHT_SIGN = chr(0x00A9)
     
 def app():
     commandline_args = parse_commandline_arguments()
-    logger.info(commandline_args)
+ #   logger.info(commandline_args)
     server_name = commandline_args.get("server_name")
     returner_name = commandline_args.get("returner_name")
     print('Start Match between {} and {}.'.format(server_name, returner_name))

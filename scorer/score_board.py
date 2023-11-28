@@ -1,4 +1,6 @@
+from loguru import logger
 from scorer.match import Match
+from scorer.set import Set
 
 class ScoreBoard:
     '''A class to nicely reveal the score of a match'''
@@ -17,9 +19,10 @@ class ScoreBoard:
             serverLine +=  ScoreBoard.__format_set(set, self.match.server)
             returnerLine += ScoreBoard.__format_set(set, self.match.returner)
 
-        # game
-        serverLine += ScoreBoard.__format_game(self.match.sets[-1], self.match.server)
-        returnerLine += ScoreBoard.__format_game(self.match.sets[-1], self.match.returner)
+        # game/tiebreak point
+        running_set = self.match.sets[-1]
+        serverLine += ScoreBoard.__format_points(running_set, self.match.server)
+        returnerLine += ScoreBoard.__format_points(running_set, self.match.returner)
         return "{}\n{}".format(serverLine, returnerLine)
 
     @classmethod
@@ -31,7 +34,7 @@ class ScoreBoard:
         return " {:^3} |".format(str(set.score().get("Set").get(player.name)))
 
     @classmethod
-    def __format_game(cls, currentSet, player) -> str:
-        gameScore = currentSet.score().get("Set").get("Game")
-        gamePoints = str(gameScore.get(player.name)) if gameScore is not None else " "
-        return " {:>3} |".format(gamePoints)
+    def __format_points(cls, currentSet:Set, player) -> str:
+        game_or_tiebreak_score = currentSet.score().get("Set").get("Tiebreak") if currentSet.hasRunningTiebreak() else currentSet.score().get("Set").get("Game")
+        points = str(game_or_tiebreak_score.get(player.name)) if game_or_tiebreak_score is not None else ""
+        return " {:>3} |".format(points)
