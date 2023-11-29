@@ -52,4 +52,14 @@ class ScorerTestHelper:
                 retruner_name: returner_points
             }
         }
+    
+    @classmethod
+    def format_score_tiebreak(cls, server_name:str, returner_name:str, server_points:int, returner_points:int):
+        return {
+            ScorerTestHelper.TIEBREAK_KEY: {
+                server_name: server_points,
+                returner_name: returner_points
+            }
+        }   
+
 
