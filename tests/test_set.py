@@ -25,6 +25,14 @@ class TestSet:
         return Set(test_server, test_returner)
     
     @pytest.fixture
+    def test_set_in_tiebreak(self, test_server:Player, test_returner:Player) -> Set:
+        test_set = Set(test_server, test_returner)
+        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        return test_set
+    
+    @pytest.fixture
     def test_long_set(self, test_server:Player, test_returner:Player) -> Set:
         return Set(test_server, test_returner, False)
 
@@ -83,49 +91,29 @@ class TestSet:
     def test_defaultset_has_tiebreak(self, test_set:Set):
         assert test_set.has_tiebreak()
         
-    def test_start_tiebreak_at_6_6(self, test_set:Set, test_server:Player, test_returner:Player):
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        # 6:6 -> next rally in tiebreak
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, 1)
-        assert test_set.score() == ScorerTestHelper.format_score_set_and_tiebreak(self.SERVER_NAME, self.RETURNER_NAME, 6, 6, 1, 0)
+    def test_start_tiebreak_at_6_6(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
+        ScorerTestHelper.scoreXtimesFor(test_set_in_tiebreak, test_server, 1)
+        assert test_set_in_tiebreak.score() == ScorerTestHelper.format_score_set_and_tiebreak(self.SERVER_NAME, self.RETURNER_NAME, 6, 6, 1, 0)
             
-    def test_tiebreak_set_7_6__7_0_is_over(self, test_set:Set, test_server:Player, test_returner:Player):
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        # 6:6 -> next rally in tiebreak
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+    def test_tiebreak_set_7_6__7_0_is_over(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
+        ScorerTestHelper.scoreXtimesFor(test_set_in_tiebreak, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
         # 6:6 (7:0) -> set is over
-        assert test_set.isOver()
+        assert test_set_in_tiebreak.isOver()
 
-    def test_tiebreak_set_7_6__7_0_is_winner_is_server(self, test_set:Set, test_server:Player, test_returner:Player):
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        # 6:6 -> next rally in tiebreak
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+    def test_tiebreak_set_7_6__7_0_is_winner_is_server(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
+        ScorerTestHelper.scoreXtimesFor(test_set_in_tiebreak, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
         # 7:6 (7:0) -> winner is server
-        assert test_set.winner() == test_server
+        assert test_set_in_tiebreak.winner() == test_server
 
-    def test_tiebreak_result_7_6__7_0(self, test_set:Set, test_server:Player, test_returner:Player):
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        # 6:6 -> next rally in tiebreak
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+    def test_tiebreak_result_7_6__7_0(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
+        ScorerTestHelper.scoreXtimesFor(test_set_in_tiebreak, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
         # 7:6 (7:0) -> verify score
-        assert test_set.score() == ScorerTestHelper.format_score_set_and_tiebreak(self.SERVER_NAME, self.RETURNER_NAME, 7, 6, 7, 0)
+        assert test_set_in_tiebreak.score() == ScorerTestHelper.format_score_set_and_tiebreak(self.SERVER_NAME, self.RETURNER_NAME, 7, 6, 7, 0)
 
-    def test_has_been_decided_in_tiebreak(self, test_set:Set, test_server:Player, test_returner:Player):
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
-        ScorerTestHelper.scoreXtimesFor(test_set, test_returner, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        # 6:6 -> next rally in tiebreak
-        ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
+    def test_has_been_decided_in_tiebreak(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
+        ScorerTestHelper.scoreXtimesFor(test_set_in_tiebreak, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
         # 7:6 (7:0) -> set decided in tiebreak
-        assert test_set.hasBeenDecidedInTiebreak()
+        assert test_set_in_tiebreak.hasBeenDecidedInTiebreak()
 
     def test_has_not_been_decided_in_tiebreak(self, test_set:Set, test_server:Player):
         ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
