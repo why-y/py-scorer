@@ -43,4 +43,13 @@ class ScorerTestHelper:
                 }
             }
         }
+    
+    @classmethod
+    def format_score_game(cls, server_name:str, retruner_name:str, server_points:int, returner_points:int):
+        return {
+            ScorerTestHelper.GAME_KEY: {
+                server_name: server_points,
+                retruner_name: returner_points
+            }
+        }
 

@@ -33,10 +33,7 @@ class Game:
         return max(self.rallyPoints.values())>3 and Helper.twoAppart(self.__getServerRallyPoints(), self.__getReturnerRallyPoints())
 
     def winner(self):
-        if(self.isOver()):
-            return self.__leadingPlayer()
-        else:
-            return None
+        return self.__leadingPlayer() if self.isOver() else None
 
     def __leadingPlayer(self) -> Player:
         return self.server if self.__getServerRallyPoints() > self.__getReturnerRallyPoints() else self.returner
