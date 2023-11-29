@@ -6,8 +6,11 @@ from scorer.player import Player
 class TestPlayer:
 
     NAME = "Paul"
-    player = Player(NAME)
 
-    def test_init_name(self):
-        initialName = self.player.name
-        assert initialName == self.NAME
+    # Arrange
+    @pytest.fixture
+    def test_player(self) -> Player:
+        return Player(self.NAME)
+
+    def test_init_name(self, test_player:Player):
+        assert test_player.name == self.NAME
