@@ -1,15 +1,15 @@
 import logging
 from scorer.player import Player
 from scorer.set import Set
-from scorer.game import Game
-from scorer.tiebreak import Tiebreak
+#from scorer.game import Game
+#from scorer.tiebreak import Tiebreak
 
 logging.basicConfig(level=logging.DEBUG)
 
 class Match:
     '''A class to score a tennis match'''
 
-    def __init__(self, server: Player, returner: Player, bestOf=3, withTiebreaks=True) -> None:
+    def __init__(self, server: Player, returner: Player, bestOf:int=3, withTiebreaks:bool=True) -> None:
         self.server = server
         self.returner = returner
         self.sets = []
@@ -42,20 +42,23 @@ class Match:
                 (serverSets > self.bestOf/2 or returnerSets > self.bestOf/2) \
                  else False
 
-    def winner(self):
+    def winner(self) -> Player:
         if(self.isOver()):
             serverSets = Match.__getNoOfSetsWonBy(self.sets, self.server)
             returnerSets = Match.__getNoOfSetsWonBy(self.sets, self.returner)
             return self.server if serverSets>returnerSets else self.returner
         else:
-            return None           
+            raise ValueError("this Match has no winner since it's not over yet: ()".format(str(self.score())))    
 
     def __getRunningSet(self) -> Set:
         latestSet = self.sets[-1]
-        return None if latestSet.isOver() else latestSet
+        if latestSet is None:
+            raise ValueError("This Match has no running set: {}".format(str(self.score())))
+        return latestSet 
 
-    def __hasRunningSet(self) -> Set:
-        return False if self.__getRunningSet() is None else True
+    def __hasRunningSet(self) -> bool:
+        latestSet = self.sets[-1]
+        return True if latestSet is not None and not latestSet.isOver() else False
 
     @classmethod
     def __getNoOfSetsWonBy(cls, allSets, player: Player) -> int:

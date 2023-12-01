@@ -58,7 +58,7 @@ class TestSet:
         ScorerTestHelper.scoreXtimesFor(test_long_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         #terminated
         with pytest.raises(ValueError):
-            test_long_set.rallyPointFor(test_long_set)
+            test_long_set.rallyPointFor(test_long_set.server    )
 
     def test_6_5_is_not_over(self, test_long_set:Set, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_long_set, test_returner, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
@@ -84,15 +84,11 @@ class TestSet:
         assert test_long_set.score() == ScorerTestHelper.format_score_set_and_game(self.SERVER_NAME, self.RETURNER_NAME, 1,0,0,0) 
 
     
-    # Tiebreak tests
-    def test_longset_has_no_tiebreak(self, test_long_set:Set):
-        assert not test_long_set.has_tiebreak()
-
-    def test_defaultset_has_tiebreak(self, test_set:Set):
-        assert test_set.has_tiebreak()
-        
+    # Tiebreak tests        
     def test_start_tiebreak_at_6_6(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
-        ScorerTestHelper.scoreXtimesFor(test_set_in_tiebreak, test_server, 1)
+        # 6:6 (0:0)
+        test_set_in_tiebreak.rallyPointFor(test_server)
+        # 6:6 (1:0)
         assert test_set_in_tiebreak.score() == ScorerTestHelper.format_score_set_and_tiebreak(self.SERVER_NAME, self.RETURNER_NAME, 6, 6, 1, 0)
             
     def test_tiebreak_set_7_6__7_0_is_over(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
@@ -113,9 +109,9 @@ class TestSet:
     def test_has_been_decided_in_tiebreak(self, test_set_in_tiebreak:Set, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_set_in_tiebreak, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_TIEBREAK)
         # 7:6 (7:0) -> set decided in tiebreak
-        assert test_set_in_tiebreak.hasBeenDecidedInTiebreak()
+        assert test_set_in_tiebreak.hasTerminatedTiebreak()
 
     def test_has_not_been_decided_in_tiebreak(self, test_set:Set, test_server:Player):
         ScorerTestHelper.scoreXtimesFor(test_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
         # 6:0 -> set not decided in tiebreak
-        assert not test_set.hasBeenDecidedInTiebreak()
+        assert not test_set.hasTerminatedTiebreak()

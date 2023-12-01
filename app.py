@@ -1,4 +1,4 @@
-from loguru import logger
+#from loguru import logger
 import argparse
 
 from scorer.match import Match
@@ -38,7 +38,7 @@ def app():
     print('Match is over! {} has won by:'.format(match.winner().name))
     print(scoreBoard.formatted_score())
 
-def parse_commandline_arguments() -> dict:
+def parse_commandline_arguments():
     parser = argparse.ArgumentParser(
         prog="py-scorer",
         description="A simple Tennis score board in Python",
