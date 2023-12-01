@@ -21,10 +21,10 @@ class Set:
     def score(self):
         setScore = {}
         setScore.update(self.__scoreOfTerminatedGames())
-        if self.hasRunningGame(): 
-            setScore.get(Set.KEY).update(self.__getRunningGame().score())
+        if self.hasRunningGame():
+            self.__addToScore(setScore.get(Set.KEY), self.__getRunningGame().score())
         if self.hasTiebreak(): 
-            setScore.get(Set.KEY).update(self.getTiebreak().score())
+            self.__addToScore(setScore.get(Set.KEY), self.getTiebreak().score())
         return setScore
 
     def rallyPointFor(self, player:Player) -> None:
@@ -94,7 +94,7 @@ class Set:
     def __needsTiebreak(self) -> bool:
         return self.with_tiebreak and self.__getNoOfGamesWonBy(self.server)==6 and self.__getNoOfGamesWonBy(self.returner)==6
 
-    def __scoreOfTerminatedGames(self):
+    def __scoreOfTerminatedGames(self) -> dict:
         scoreServer = self.__getNoOfGamesWonBy(self.server)
         scoreReturner = self.__getNoOfGamesWonBy(self.returner)
         return {
@@ -113,5 +113,7 @@ class Set:
                 if game.winner() == player:
                     noOfGamesWon += 1
         return noOfGamesWon
-        
+    
+    def __addToScore(self, setScore, additionalScore:dict):
+        setScore.update(additionalScore)
 

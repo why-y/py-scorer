@@ -77,11 +77,11 @@ class TestSet:
         assert not test_long_set.isOver()
 
     def test_start_set_score_0_0(self, test_long_set:Set):
-        assert test_long_set.score() == ScorerTestHelper.format_score_set_and_game(self.SERVER_NAME, self.RETURNER_NAME, 0,0,0,0) 
+        assert test_long_set.score() == ScorerTestHelper.format_score_set_and_game(self.SERVER_NAME, self.RETURNER_NAME, 0,0,"0","0") 
 
     def test_score_1_0(self, test_long_set:Set, test_server:Player):
         ScorerTestHelper.scoreXtimesFor(test_long_set, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
-        assert test_long_set.score() == ScorerTestHelper.format_score_set_and_game(self.SERVER_NAME, self.RETURNER_NAME, 1,0,0,0) 
+        assert test_long_set.score() == ScorerTestHelper.format_score_set_and_game(self.SERVER_NAME, self.RETURNER_NAME, 1,0,"0","0") 
 
     
     # Tiebreak tests        

@@ -34,10 +34,15 @@ class Tiebreak:
         return self.server if self.__getServerRallyPoints() > self.__getReturnerRallyPoints() else self.returner
     
     def __getServerRallyPoints(self) -> int:
-        return self.rallyPoints.get(self.server)
+        serverRallyPoints = self.rallyPoints.get(self.server)
+        if serverRallyPoints is None:
+            raise LookupError("cannot find rally points for player: " + self.server.name)
+        return serverRallyPoints
 
     def __getReturnerRallyPoints(self) -> int:
-        return self.rallyPoints.get(self.returner)
-
+        returnerRallyPoints = self.rallyPoints.get(self.returner)
+        if returnerRallyPoints is None:
+            raise LookupError("cannot find rally points for player: " + self.returner.name)
+        return returnerRallyPoints
 
 

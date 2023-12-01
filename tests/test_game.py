@@ -46,31 +46,31 @@ class TestGame:
         assert test_game.winner() == None
 
     def test_start_game_score_love_all(self, test_game:Game):
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 0, 0)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "0", "0")
 
     def test_score_15_0(self, test_game:Game, test_server:Player):
         test_game.rallyPointFor(test_server)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 15, 0)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "15", "0")
 
     def test_score_15_all(self, test_game:Game, test_server:Player, test_returner:Player):
         test_game.rallyPointFor(test_server)
         test_game.rallyPointFor(test_returner)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 15, 15)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "15", "15")
 
     def test_score_15_30(self, test_game:Game, test_server:Player, test_returner:Player):
         test_game.rallyPointFor(test_server)
         ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 2)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 15, 30)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "15", "30")
 
     def test_score_30_all(self, test_game:Game, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 2)
         ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 2)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 30, 30)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "30", "30")
 
     def test_score_40_30(self, test_game:Game, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 3)
         ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 2)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 40, 30)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "40", "30")
 
     def test_winner_is_server(self, test_game:Game, test_server:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 4)
@@ -95,27 +95,22 @@ class TestGame:
     def test_score_advantage_server(self, test_game:Game, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 3)
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 4)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "A", 40)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "A", "40")
 
     def test_score_advantage_retruner(self, test_game:Game, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 3)
         ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 4)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 40, "A")
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "40", "A")
 
     def test_score_advantage_long_game(self, test_game:Game, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 3)
         ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 4)
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 2)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "A", 40)
-
-    def test_score_15_30(self, test_game:Game, test_server:Player, test_returner:Player):
-        test_game.rallyPointFor(test_server)
-        ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 2)
-        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, 15, 30)
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "A", "40")
 
     def test_score_is_none_on_terminated_game(self, test_game:Game, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_returner, 4)
-        assert test_game.score() is None
+        assert test_game.score() == ScorerTestHelper.format_score_game(self.SERVER_NAME, self.RETURNER_NAME, "", "W")
 
     def test_error_score_on_terminated_game(self, test_game:Game, test_server:Player, test_returner:Player):
         ScorerTestHelper.scoreXtimesFor(test_game, test_server, 4)

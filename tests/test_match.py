@@ -95,8 +95,8 @@ class TestMatch:
                     self.SERVER_NAME: 4,
                     self.RETURNER_NAME: 3,
                     ScorerTestHelper.GAME_KEY: {
-                        self.SERVER_NAME: 15,
-                        self.RETURNER_NAME: 30                     
+                        self.SERVER_NAME: "15",
+                        self.RETURNER_NAME: "30"                     
                     }
                 }
             }
@@ -124,8 +124,8 @@ class TestMatch:
                     self.SERVER_NAME: 3,
                     self.RETURNER_NAME: 1,
                     ScorerTestHelper.GAME_KEY: {
-                        self.SERVER_NAME: 0,
-                        self.RETURNER_NAME: 0                     
+                        self.SERVER_NAME: "0",
+                        self.RETURNER_NAME: "0"                     
                     }
                 }
             }
