@@ -1,43 +1,13 @@
-#from loguru import logger
+from loguru import logger
 import argparse
+from pynput.keyboard import Key, Listener, KeyCode
 
 from scorer.match import Match
 from scorer.player import Player
 from scorer.score_board import ScoreBoard
 
-COPYRIGHT_SIGN = chr(0x00A9)
-    
-def app():
-    commandline_args = parse_commandline_arguments()
- #   logger.info(commandline_args)
-    server_name = commandline_args.get("server_name")
-    returner_name = commandline_args.get("returner_name")
-    bestof = commandline_args.get("bestof")
-    print('Start best of {} Match between {} and {}.'.format(bestof, server_name, returner_name))
-    print('{} serves.'.format(server_name))
-
-    match = Match(Player(server_name), Player(returner_name), bestof)
-    scoreBoard = ScoreBoard(match)
-    print(scoreBoard.formatted_score())
-
-    while not match.isOver():
-        rallyFor = input(' -> enter [a] to score for {} or [b] to score for {}  : '.format(server_name, returner_name))
-        if(rallyFor == 'a'):
-            match.rallyPointFor(match.server)
-            print(scoreBoard.formatted_score())
-
-        elif(rallyFor == 'b'):
-            match.rallyPointFor(match.returner)
-            print(scoreBoard.formatted_score())
-        elif(rallyFor.lower() == 'exit' or rallyFor.lower() == 'quit'):
-            quit()
-        else:
-            print('!! Type either of: [a] or [b] to score or [exit] to terminate!')
-            pass
-    
-    print('Match is over! {} has won by:'.format(match.winner().name))
-    print(scoreBoard.formatted_score())
-
+COPYRIGHT_SIGN = chr(0x00A9
+                     )
 def parse_commandline_arguments():
     parser = argparse.ArgumentParser(
         prog="py-scorer",
@@ -55,4 +25,47 @@ def parse_commandline_arguments():
         "with_tiebreak": not args.no_tiebreaks
     }
 
-app()
+def print_instrucitons():
+    print('!! Type either of: [f] to score for {} or [j] to score for {} or [esc] to terminate!'.format(server_name, returner_name), flush=True)
+
+
+commandline_args = parse_commandline_arguments()
+server_name = commandline_args.get("server_name")
+returner_name = commandline_args.get("returner_name")
+bestof = commandline_args.get("bestof")
+
+match = Match(Player(server_name), Player(returner_name), bestof if type(bestof) is int else 3)
+scoreBoard = ScoreBoard(match)
+
+print('Start best of {} Match between {} and {}.'.format(bestof, server_name, returner_name), flush=True)
+
+def on_press(key):
+    try:
+        if key.char == 'f':
+            match.rallyPointFor(match.server)
+            print(scoreBoard.formatted_score(), flush=True)
+        elif key.char == 'j':
+            match.rallyPointFor(match.returner)
+            print(scoreBoard.formatted_score(), flush=True)
+        else:
+            print_instrucitons()
+    except AttributeError:
+        if key == Key.esc:
+            print(scoreBoard.formatted_score(), flush=True)
+            return False
+        else:
+            print_instrucitons()
+    except ValueError:
+        return False
+    
+    if(match.isOver()):
+        print('Match is over! {} has won by:'.format(match.winner().name))
+        print(scoreBoard.formatted_score())
+        return False
+    
+
+print(scoreBoard.formatted_score(), flush=True)
+
+# Collect events until released
+with Listener(on_press, suppress=True) as listener:
+    listener.join()

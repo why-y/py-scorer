@@ -28,11 +28,14 @@ class ScoreBoard:
             serverLine += self.__format_points(running_set, self.match.server)
             returnerLine += self.__format_points(running_set, self.match.returner)
         
-        return "{}\n{}".format(serverLine, returnerLine)
+        return "{}\n{}\n{}".format(serverLine, returnerLine, self.__ruler(len(returnerLine)))
+
+    def __ruler(self, len:int) -> str:
+        return "-" * len
 
     def __format_name(self, name) -> str:
         return "{:<20}|".format(name)
-
+    
     def __format_set(self, set:Set, player:Player) -> str:
         no_of_games = str(self.__get_set_score_from_set(set).get(player.name))
         if set.hasTerminatedTiebreak():
