@@ -1,6 +1,6 @@
-from loguru import logger
 import argparse
-from pynput.keyboard import Key, Listener, KeyCode
+from pynput.keyboard import Key, Listener
+#from loguru import logger
 
 from scorer.match import Match
 from scorer.player import Player
@@ -28,17 +28,6 @@ def parse_commandline_arguments():
 def print_instrucitons():
     print('!! Type either of: [f] to score for {} or [j] to score for {} or [esc] to terminate!'.format(server_name, returner_name), flush=True)
 
-
-commandline_args = parse_commandline_arguments()
-server_name = commandline_args.get("server_name")
-returner_name = commandline_args.get("returner_name")
-bestof = commandline_args.get("bestof")
-
-match = Match(Player(server_name), Player(returner_name), bestof if type(bestof) is int else 3)
-scoreBoard = ScoreBoard(match)
-
-print('Start best of {} Match between {} and {}.'.format(bestof, server_name, returner_name), flush=True)
-
 def on_press(key):
     try:
         if key.char == 'f':
@@ -64,8 +53,17 @@ def on_press(key):
         return False
     
 
+commandline_args = parse_commandline_arguments()
+server_name = commandline_args.get("server_name")
+returner_name = commandline_args.get("returner_name")
+bestof = commandline_args.get("bestof")
+
+match = Match(Player(server_name), Player(returner_name), bestof if type(bestof) is int else 3)
+scoreBoard = ScoreBoard(match)
+
+print('Start best of {} Match between {} and {}.'.format(bestof, server_name, returner_name), flush=True)
 print(scoreBoard.formatted_score(), flush=True)
 
-# Collect events until released
+# Collect events until terminated
 with Listener(on_press, suppress=True) as listener:
     listener.join()

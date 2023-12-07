@@ -28,7 +28,8 @@ class ScoreBoard:
             serverLine += self.__format_points(running_set, self.match.server)
             returnerLine += self.__format_points(running_set, self.match.returner)
         
-        return "{}\n{}\n{}".format(serverLine, returnerLine, self.__ruler(len(returnerLine)))
+        ruler = self.__ruler(len(returnerLine))
+        return "{}\n{}\n{}\n{}".format(ruler, serverLine, returnerLine, ruler)
 
     def __ruler(self, len:int) -> str:
         return "-" * len
