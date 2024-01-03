@@ -36,6 +36,7 @@ class ScoreBoardApp(UserControl):
         self.match.rallyPointFor(player)
         if self.match.isOver():
             self.write_status("Match OVER! Winner: {}".format(self.match.winner().name))
+            self.__disable_score_buttons()
         self.__update_scoreboard()
 
     def __update_scoreboard(self):
@@ -70,13 +71,17 @@ class ScoreBoardApp(UserControl):
         for set_index in range(len(self.match.sets)):
             self.server_set_scores[set_index].value = self.match.sets[set_index].score().get(Set.KEY).get(self.server.name)
             self.returner_set_scores[set_index].value = self.match.sets[set_index].score().get(Set.KEY).get(self.returner.name)
+
+    def __disable_score_buttons(self):
+        self.server_name.disabled=True
+        self.returner_name.disabled=True
         
     def write_status(self, text:str):
         self.status_text.value=text
 
     def build(self):
         
-        self.best_of=5
+        self.best_of=3
         self.with_tiebreak=True
         self.server = Player(SERVER_NAME)
         self.returner = Player(RETURNER_NAME)
