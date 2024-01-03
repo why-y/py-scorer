@@ -22,7 +22,7 @@ class Set:
         setScore = {}
         setScore.update(self.__scoreOfTerminatedGames())
         if self.hasRunningGame():
-            self.__addToScore(setScore.get(Set.KEY), self.__getRunningGame().score())
+            self.__addToScore(setScore.get(Set.KEY), self.getRunningGame().score())
         if self.hasTiebreak(): 
             self.__addToScore(setScore.get(Set.KEY), self.getTiebreak().score())
         return setScore
@@ -31,7 +31,7 @@ class Set:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated set!")
         elif(self.hasRunningGame()):
-            self.__getRunningGame().rallyPointFor(player)
+            self.getRunningGame().rallyPointFor(player)
             if not self.hasRunningGame() and not self.isOver():
                 self.tiebreak = Tiebreak(self.server, self.returner) if self.__needsTiebreak() else self.games.append(Game(self.server, self.returner))  
         elif(self.hasRunningTiebreak()):
@@ -84,8 +84,8 @@ class Set:
 
     def hasTerminatedTiebreak(self) -> bool:
         return True if self.hasTiebreak() and self.getTiebreak().isOver() else False
-    
-    def __getRunningGame(self) -> Game:
+        
+    def getRunningGame(self) -> Game:
         latestGame = self.games[-1]
         if latestGame is None:
             raise ValueError("this set has no running Game: {}".format(str(self.score())))
