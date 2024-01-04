@@ -2,10 +2,15 @@ import flet
 from flet import (
     Column,
     Container,
+    TextButton,
     ElevatedButton,
     Page,
     Row,
     Text,
+    TextField,
+    TextStyle,
+    Paint,
+    IconButton,
     UserControl,
     FontWeight,
     TextAlign,
@@ -23,19 +28,43 @@ from scorer.tiebreak import Tiebreak
 
 FONT_SIZE = 32
 
-SERVER_NAME = "Harry Benalli"
-RETURNER_NAME = "Kenny Roncow"
 COL_NAME_EXPAND = 3
 COL_POINTS_EXPAND = 1
 COL_SET_EXPAND = 1
 
 class ScoreBoardApp(UserControl):
 
-    def score_point_for(self, event):
-        player = event.control.data
+    def __start_match(self, event):
+        self.best_of=3
+        self.with_tiebreak=True
+        self.server = Player(self.server_name.value)
+        self.returner = Player(self.returner_name.value)
+        self.match = Match(self.server, self.returner, bestOf=self.best_of, withTiebreaks=self.with_tiebreak)
+        self.server_points.value="0"
+        self.returner_points.value="0"
+
+        self.server_score_button.text = self.server_name.value
+        self.server_row.controls[0]=self.server_score_button
+        self.server_name.disabled=True
+        
+        self.returner_score_button.text = self.returner_name.value
+        self.returner_row.controls[0]=self.returner_score_button
+        self.returner_name.disabled=True
+        
+        
+        self.setup_row.visible=False
+        self.update()
+
+    def __score_point_for_server(self, event):
+        self.__score_point_for(self.server)       
+
+    def __score_point_for_returner(self, event):
+        self.__score_point_for(self.returner)       
+
+    def __score_point_for(self, player:Player):
         self.match.rallyPointFor(player)
         if self.match.isOver():
-            self.write_status("Match OVER! Winner: {}".format(self.match.winner().name))
+            self.__write_status("Match OVER! Winner: {}".format(self.match.winner().name))
             self.__disable_score_buttons()
         self.__update_scoreboard()
 
@@ -45,7 +74,7 @@ class ScoreBoardApp(UserControl):
         running_set = self.match.sets[-1]
         self.__update_points_score(running_set)
         self.__update_sets_score()
-        self.write_status(str(self.match.score()))
+        self.__write_status(str(self.match.score()))
         self.update()
 
     def __update_points_score(self, running_set:Set):
@@ -73,20 +102,14 @@ class ScoreBoardApp(UserControl):
             self.returner_set_scores[set_index].value = self.match.sets[set_index].score().get(Set.KEY).get(self.returner.name)
 
     def __disable_score_buttons(self):
-        self.server_name.disabled=True
-        self.returner_name.disabled=True
+        self.server_score_button.disabled=True
+        self.returner_score_button.disabled=True
         
-    def write_status(self, text:str):
+    def __write_status(self, text:str):
         self.status_text.value=text
 
     def build(self):
         
-        self.best_of=3
-        self.with_tiebreak=True
-        self.server = Player(SERVER_NAME)
-        self.returner = Player(RETURNER_NAME)
-        self.match = Match(self.server, self.returner, bestOf=self.best_of, withTiebreaks=self.with_tiebreak)
-
         self.header_row = Row(
             controls= [
                 Text(
@@ -97,22 +120,28 @@ class ScoreBoardApp(UserControl):
             ]
         )
  
-        self.returner_name = ElevatedButton(
-            text=self.match.returner.name, 
-            data=self.match.returner,
-            expand=COL_NAME_EXPAND,
-            on_click=self.score_point_for
+        self.server_name = TextField(
+            hint_text="Server Name",
+            expand=COL_NAME_EXPAND
         )
 
-        self.server_name = ElevatedButton(
-            text=self.match.server.name, 
-            data=self.match.server,
+        self.server_score_button = ElevatedButton(
             expand=COL_NAME_EXPAND,
-            on_click=self.score_point_for
+            on_click=self.__score_point_for_server
         )
-        
+
+        self.returner_name = TextField(
+            hint_text="Retruner Name",
+            expand=COL_NAME_EXPAND
+        )
+
+        self.returner_score_button = ElevatedButton(
+            expand=COL_NAME_EXPAND,
+            on_click=self.__score_point_for_returner
+        )
+
         self.server_points = Text(
-            value="0",
+            value="",
             expand=COL_POINTS_EXPAND,
             text_align=TextAlign.RIGHT,
             weight=FontWeight.BOLD, 
@@ -120,7 +149,7 @@ class ScoreBoardApp(UserControl):
         )
 
         self.returner_points = Text(
-            value="0",
+            value="",
             expand=COL_POINTS_EXPAND,
             text_align=TextAlign.RIGHT,
             weight=FontWeight.BOLD, 
@@ -130,7 +159,7 @@ class ScoreBoardApp(UserControl):
         self.set_labels=[]
         self.server_set_scores=[]
         self.returner_set_scores=[]
-        for set_no in range(1, self.best_of+1):
+        for set_no in range(1, 5):
             self.set_labels.append(
                 Text(
                     value="Set "+str(set_no),
@@ -161,6 +190,32 @@ class ScoreBoardApp(UserControl):
             expand=COL_POINTS_EXPAND
         )
 
+        self.server_row = Row(
+            controls=[
+                self.server_name,
+                self.server_points
+            ] + self.server_set_scores
+        )
+
+        self.returner_row = Row(
+            controls=[
+                self.returner_name,
+                self.returner_points
+            ] + self.returner_set_scores
+        )
+
+        self.setup_row = Row(
+            controls=[
+                Text(
+                    value="Enter the payers names and "
+                ),
+                TextButton(
+                    text="Start The Match",
+                    on_click=self.__start_match
+                )
+            ]
+        )
+
         self.status_text = Text(
             value = "",
             size=10
@@ -181,20 +236,9 @@ class ScoreBoardApp(UserControl):
                             self.points_title
                         ] + self.set_labels
                     ),
-                    # 1st Player row
-                    Row(
-                        controls=[
-                            self.server_name,
-                            self.server_points
-                        ] + self.server_set_scores
-                    ),
-                    # 2nd Player row
-                    Row(
-                        controls=[
-                            self.returner_name,
-                            self.returner_points
-                        ] + self.returner_set_scores
-                    ),
+                    self.server_row,
+                    self.returner_row,
+                    self.setup_row,
                     # footer row
                     Row(
                         controls=[
