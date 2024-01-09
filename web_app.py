@@ -2,19 +2,20 @@ import flet
 from flet import (
     Column,
     Container,
-    TextButton,
     ElevatedButton,
+    SegmentedButton,
+    Segment,
+    ControlEvent,
     Page,
     Row,
     Text,
     TextField,
-    TextStyle,
-    Paint,
-    IconButton,
     UserControl,
     FontWeight,
     TextAlign,
+    Icon,
     border_radius,
+    icons,
     colors,
 )
 
@@ -27,18 +28,22 @@ from scorer.game import Game
 from scorer.tiebreak import Tiebreak
 
 FONT_SIZE = 32
-
 COL_NAME_EXPAND = 3
-COL_POINTS_EXPAND = 1
-COL_SET_EXPAND = 1
+COL_POINTS_EXPAND=1
+COL_SET_EXPAND=1
+BEST_OF_DEFAULT=3
 
 class ScoreBoardApp(UserControl):
 
-    def __start_match(self, event):
-        self.best_of=3
+    def __init__(self):
+        super().__init__()
         self.with_tiebreak=True
+        self.best_of=BEST_OF_DEFAULT
+
+    def __start_match(self, event):
         self.server = Player(self.server_name.value)
         self.returner = Player(self.returner_name.value)
+        logger.info("---- START MATCH: {} against {} best-of {}".format(self.server.name, self.returner.name, self.best_of))
         self.match = Match(self.server, self.returner, bestOf=self.best_of, withTiebreaks=self.with_tiebreak)
         self.server_points.value="0"
         self.returner_points.value="0"
@@ -50,8 +55,7 @@ class ScoreBoardApp(UserControl):
         self.returner_score_button.text = self.returner_name.value
         self.returner_row.controls[0]=self.returner_score_button
         self.returner_name.disabled=True
-        
-        
+                
         self.setup_row.visible=False
         self.update()
 
@@ -60,6 +64,45 @@ class ScoreBoardApp(UserControl):
 
     def __score_point_for_returner(self, event):
         self.__score_point_for(self.returner)       
+
+    def __get_best_of_selection(self):
+        selected = int(self.best_of_selector.selected.pop())
+        logger.info("---- selector.selected:{} ---- type:{}".format(selected, type(selected)))
+        return selected
+
+    def __on_best_of_change(self, event:ControlEvent):
+        self.best_of = self.__get_best_of_selection()
+        if self.best_of == 3:
+            self.label_row.controls.pop()
+            self.label_row.controls.pop()
+            self.server_row.controls.pop()
+            self.server_row.controls.pop()
+            self.returner_row.controls.pop()
+            self.returner_row.controls.pop()
+        elif self.best_of == 5:
+            self.label_row.controls.append(
+                Text(value="Set 4", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
+            )
+            self.label_row.controls.append(
+                Text(value="Set 5", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
+            )
+            self.server_row.controls.append(
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+            )
+            self.server_row.controls.append(
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+            )
+            self.returner_row.controls.append(
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+            )
+            self.returner_row.controls.append(
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+            )
+
+        else:
+            raise ValueError("Best-Of: {} is not supported!".format(self.best_of))
+            
+        self.update()
 
     def __score_point_for(self, player:Player):
         self.match.rallyPointFor(player)
@@ -97,9 +140,10 @@ class ScoreBoardApp(UserControl):
         self.returner_points.value=str(game_score.get(self.returner.name))
 
     def __update_sets_score(self):
+        set_row_offset = 2 # row offset for name and score-button
         for set_index in range(len(self.match.sets)):
-            self.server_set_scores[set_index].value = self.match.sets[set_index].score().get(Set.KEY).get(self.server.name)
-            self.returner_set_scores[set_index].value = self.match.sets[set_index].score().get(Set.KEY).get(self.returner.name)
+            self.server_row.controls[set_index+set_row_offset].value = self.match.sets[set_index].score().get(Set.KEY).get(self.server.name)
+            self.returner_row.controls[set_index+set_row_offset].value = self.match.sets[set_index].score().get(Set.KEY).get(self.returner.name)
 
     def __disable_score_buttons(self):
         self.server_score_button.disabled=True
@@ -156,60 +200,66 @@ class ScoreBoardApp(UserControl):
             size=FONT_SIZE
         )
 
-        self.set_labels=[]
-        self.server_set_scores=[]
-        self.returner_set_scores=[]
-        for set_no in range(1, 5):
-            self.set_labels.append(
-                Text(
-                    value="Set "+str(set_no),
-                    text_align=TextAlign.RIGHT,
-                    expand=COL_SET_EXPAND
-                )
-            )
-            self.server_set_scores.append(
-                Text(
-                    value="",
-                    text_align=TextAlign.RIGHT,
-                    expand=COL_SET_EXPAND,
-                    size=FONT_SIZE
-                )
-            )
-            self.returner_set_scores.append(
-                Text(
-                    value="",
-                    text_align=TextAlign.RIGHT,
-                    expand=COL_SET_EXPAND,
-                    size=FONT_SIZE
-                )
-            )
-
         self.points_title = Text(
             value="Game",
             text_align=TextAlign.RIGHT,
             expand=COL_POINTS_EXPAND
         )
 
+        self.best_of_selector=SegmentedButton(
+            on_change=self.__on_best_of_change,
+            selected={BEST_OF_DEFAULT},
+            allow_empty_selection=False,
+            allow_multiple_selection=False,
+            segments=[
+                Segment(
+                    value="3",
+                    label=Text("3")
+                ),
+                Segment(
+                    value="5",
+                    label=Text("5")
+                )
+            ]
+        )
+
+        self.label_row = Row(
+            controls=[
+                Text(value="Player", expand=COL_NAME_EXPAND),
+                self.points_title,
+                Text(value="Set 11", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
+                Text(value="Set 22", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
+                Text(value="Set 33", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
+            ]
+        )
+
         self.server_row = Row(
             controls=[
                 self.server_name,
-                self.server_points
-            ] + self.server_set_scores
+                self.server_points,
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE)
+            ]
         )
 
         self.returner_row = Row(
             controls=[
                 self.returner_name,
-                self.returner_points
-            ] + self.returner_set_scores
+                self.returner_points,
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+                Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE)
+            ]
         )
 
         self.setup_row = Row(
             controls=[
                 Text(
-                    value="Enter the payers names and "
+                    value="Best Of "
                 ),
-                TextButton(
+                self.best_of_selector,
+                ElevatedButton(
                     text="Start The Match",
                     on_click=self.__start_match
                 )
@@ -230,12 +280,7 @@ class ScoreBoardApp(UserControl):
                 controls=[
                     self.header_row,
                     # label row
-                    Row(
-                        controls=[
-                            Text(value="Player", expand=COL_NAME_EXPAND),
-                            self.points_title
-                        ] + self.set_labels
-                    ),
+                    self.label_row,
                     self.server_row,
                     self.returner_row,
                     self.setup_row,
