@@ -31,20 +31,19 @@ from scorer.set import Set
 from scorer.game import Game
 from scorer.tiebreak import Tiebreak
 from app_header import AppHeader
+from match_configuration_widget import MatchConfigurationWidget
 from status_bar import StatusBar
 
 FONT_SIZE = 32
 COL_NAME_EXPAND = 3
 COL_POINTS_EXPAND=1
 COL_SET_EXPAND=1
-BEST_OF_DEFAULT=3
 
 class ScoreBoardApp(UserControl):
 
     def __init__(self):
         super().__init__()
         self.with_tiebreak=True
-        self.best_of=BEST_OF_DEFAULT
 
     def __start_match(self, event):
         self.server = Player(self.server_name.value)
@@ -62,7 +61,7 @@ class ScoreBoardApp(UserControl):
         self.returner_row.controls[0]=self.returner_score_button
         self.returner_name.disabled=True
                 
-        self.setup_row.visible=False
+        self.match_setup_row.visible=False
         self.update()
 
     def __score_point_for_server(self, event):
@@ -71,13 +70,8 @@ class ScoreBoardApp(UserControl):
     def __score_point_for_returner(self, event):
         self.__score_point_for(self.returner)       
 
-    def __get_best_of_selection(self):
-        selected = int(self.best_of_selector.selected.pop())
-        logger.info("---- selector.selected:{} ---- type:{}".format(selected, type(selected)))
-        return selected
-
     def __on_best_of_change(self, event:ControlEvent):
-        self.best_of = self.__get_best_of_selection()
+        self.best_of = self.match_setup_row.get_best_of()
         if self.best_of == 3:
             self.label_row.controls.pop()
             self.label_row.controls.pop()
@@ -202,23 +196,6 @@ class ScoreBoardApp(UserControl):
             expand=COL_POINTS_EXPAND
         )
 
-        self.best_of_selector=SegmentedButton(
-            on_change=self.__on_best_of_change,
-            selected={BEST_OF_DEFAULT},
-            allow_empty_selection=False,
-            allow_multiple_selection=False,
-            segments=[
-                Segment(
-                    value="3",
-                    label=Text("3")
-                ),
-                Segment(
-                    value="5",
-                    label=Text("5")
-                )
-            ]
-        )
-
         self.label_row = Row(
             controls=[
                 Text(value="Player", expand=COL_NAME_EXPAND),
@@ -249,19 +226,7 @@ class ScoreBoardApp(UserControl):
             ]
         )
 
-        self.setup_row = Row(
-            controls=[
-                Text(
-                    value="Best Of "
-                ),
-                self.best_of_selector,
-                ElevatedButton(
-                    text="Start The Match",
-                    on_click=self.__start_match
-                )
-            ]
-        )
-
+        self.match_setup_row = MatchConfigurationWidget(self.__on_best_of_change, self.__start_match)
         self.status_bar = StatusBar()
 
         return Container(
@@ -276,8 +241,7 @@ class ScoreBoardApp(UserControl):
                     self.label_row,
                     self.server_row,
                     self.returner_row,
-                    self.setup_row,
-                    # footer row
+                    self.match_setup_row,
                     self.status_bar
                 ]
             )
