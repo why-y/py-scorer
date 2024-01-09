@@ -31,6 +31,7 @@ from scorer.set import Set
 from scorer.game import Game
 from scorer.tiebreak import Tiebreak
 from app_header import AppHeader
+from status_bar import StatusBar
 
 FONT_SIZE = 32
 COL_NAME_EXPAND = 3
@@ -155,7 +156,7 @@ class ScoreBoardApp(UserControl):
         self.returner_score_button.disabled=True
         
     def __write_status(self, text:str):
-        self.status_text.value=text
+        self.status_bar.update_status_text(text)
 
     def build(self):
          
@@ -261,10 +262,7 @@ class ScoreBoardApp(UserControl):
             ]
         )
 
-        self.status_text = Text(
-            value = "",
-            size=10
-        )
+        self.status_bar = StatusBar()
 
         return Container(
             width=600,
@@ -280,11 +278,7 @@ class ScoreBoardApp(UserControl):
                     self.returner_row,
                     self.setup_row,
                     # footer row
-                    Row(
-                        controls=[
-                            self.status_text
-                        ]
-                    )
+                    self.status_bar
                 ]
             )
         )
