@@ -1,3 +1,4 @@
+from typing import Any, List, Optional, Union
 import flet
 from flet import (
     Column,
@@ -18,6 +19,9 @@ from flet import (
     icons,
     colors,
 )
+from flet_core.control import Control, OptionalNumber
+from flet_core.ref import Ref
+from flet_core.types import AnimationValue, CrossAxisAlignment, MainAxisAlignment, OffsetValue, ResponsiveNumber, RotateValue, ScaleValue, ScrollMode
 
 from loguru import logger
 
@@ -26,6 +30,7 @@ from scorer.player import Player
 from scorer.set import Set
 from scorer.game import Game
 from scorer.tiebreak import Tiebreak
+from app_header import AppHeader
 
 FONT_SIZE = 32
 COL_NAME_EXPAND = 3
@@ -153,17 +158,7 @@ class ScoreBoardApp(UserControl):
         self.status_text.value=text
 
     def build(self):
-        
-        self.header_row = Row(
-            controls= [
-                Text(
-                    value = "Tennis Score Board",
-                    size=42,
-                    weight=FontWeight.BOLD
-                )
-            ]
-        )
- 
+         
         self.server_name = TextField(
             hint_text="Server Name",
             expand=COL_NAME_EXPAND
@@ -227,9 +222,9 @@ class ScoreBoardApp(UserControl):
             controls=[
                 Text(value="Player", expand=COL_NAME_EXPAND),
                 self.points_title,
-                Text(value="Set 11", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
-                Text(value="Set 22", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
-                Text(value="Set 33", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
+                Text(value="Set 1", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
+                Text(value="Set 2", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
+                Text(value="Set 3", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
             ]
         )
 
@@ -278,7 +273,7 @@ class ScoreBoardApp(UserControl):
             border_radius=border_radius.all(20),
             content=Column(
                 controls=[
-                    self.header_row,
+                    AppHeader("Tennis Score Board"),
                     # label row
                     self.label_row,
                     self.server_row,
