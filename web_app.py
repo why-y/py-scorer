@@ -33,6 +33,7 @@ from scorer.tiebreak import Tiebreak
 from app_header import AppHeader
 from match_configuration_widget import MatchConfigurationWidget
 from status_bar import StatusBar
+from score_labels_widget import ScoreLabelsWidget
 
 FONT_SIZE = 32
 COL_NAME_EXPAND = 3
@@ -44,6 +45,12 @@ class ScoreBoardApp(UserControl):
     def __init__(self):
         super().__init__()
         self.with_tiebreak=True
+        
+        self.label_row = ScoreLabelsWidget()
+        self.match_setup_row = MatchConfigurationWidget(self.__on_best_of_change, self.__start_match)
+        self.status_bar = StatusBar()
+
+
 
     def __start_match(self, event):
         self.server = Player(self.server_name.value)
@@ -72,20 +79,13 @@ class ScoreBoardApp(UserControl):
 
     def __on_best_of_change(self, event:ControlEvent):
         self.best_of = self.match_setup_row.get_best_of()
+        self.label_row.set_bestof_mode(self.best_of)
         if self.best_of == 3:
-            self.label_row.controls.pop()
-            self.label_row.controls.pop()
             self.server_row.controls.pop()
             self.server_row.controls.pop()
             self.returner_row.controls.pop()
             self.returner_row.controls.pop()
         elif self.best_of == 5:
-            self.label_row.controls.append(
-                Text(value="Set 4", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
-            )
-            self.label_row.controls.append(
-                Text(value="Set 5", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
-            )
             self.server_row.controls.append(
                 Text(value="", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
             )
@@ -128,13 +128,13 @@ class ScoreBoardApp(UserControl):
             self.__update_running_game_points(running_set.getRunningGame())
 
     def __update_tiebreak_points(self, tiebreak:Tiebreak):
-        self.points_title.value="Tiebreak"
+        self.label_row.change_points_title("Tiebreak")
         tiebreak_score=tiebreak.score().get(Tiebreak.KEY)
         self.server_points.value=str(tiebreak_score.get(self.server.name))
         self.returner_points.value=str(tiebreak_score.get(self.returner.name))
 
     def __update_running_game_points(self, running_game:Game):
-        self.points_title.value="Game"
+        self.label_row.change_points_title("Game")
         game_score=running_game.score().get(Game.KEY)
         self.server_points.value=str(game_score.get(self.server.name))
         self.returner_points.value=str(game_score.get(self.returner.name))
@@ -195,17 +195,7 @@ class ScoreBoardApp(UserControl):
             text_align=TextAlign.RIGHT,
             expand=COL_POINTS_EXPAND
         )
-
-        self.label_row = Row(
-            controls=[
-                Text(value="Player", expand=COL_NAME_EXPAND),
-                self.points_title,
-                Text(value="Set 1", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
-                Text(value="Set 2", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND),
-                Text(value="Set 3", text_align=TextAlign.RIGHT, expand=COL_SET_EXPAND)
-            ]
-        )
-
+        
         self.server_row = Row(
             controls=[
                 self.server_name,
@@ -226,9 +216,6 @@ class ScoreBoardApp(UserControl):
             ]
         )
 
-        self.match_setup_row = MatchConfigurationWidget(self.__on_best_of_change, self.__start_match)
-        self.status_bar = StatusBar()
-
         return Container(
             width=600,
             padding=40,
@@ -237,7 +224,6 @@ class ScoreBoardApp(UserControl):
             content=Column(
                 controls=[
                     AppHeader("Tennis Score Board"),
-                    # label row
                     self.label_row,
                     self.server_row,
                     self.returner_row,
