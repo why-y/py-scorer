@@ -1,30 +1,26 @@
 import flet as ft
 from loguru import logger
 import flet_score_board.score_dict_helper as ScoreHelper
-
-FONT_SIZE = 32
-COL_NAME_EXPAND = 3
-COL_SET_EXPAND=1
-COL_POINTS_EXPAND=1
+import flet_score_board.score_board as score_board
 
 class PlayerScoreWidget(ft.UserControl):
     def __init__(self, on_score_button_clicked):
         super().__init__()
         self.player_name = ft.TextField(
             hint_text="Server Name",
-            expand=COL_NAME_EXPAND
+            expand=score_board.COL_NAME_EXPAND
         )
         self.player_score_button = ft.ElevatedButton(
-            expand=COL_NAME_EXPAND,
+            expand=score_board.COL_NAME_EXPAND,
             visible=False,
             on_click=on_score_button_clicked
         )
         self.player_points = ft.Text(
             value="",
-            expand=COL_POINTS_EXPAND,
+            expand=score_board.COL_POINTS_EXPAND,
             text_align=ft.TextAlign.RIGHT,
             weight=ft.FontWeight.BOLD, 
-            size=FONT_SIZE
+            size=score_board.FONT_SIZE
         )
         self.player_score_row = ft.Row(
             controls=[
@@ -32,9 +28,9 @@ class PlayerScoreWidget(ft.UserControl):
                 self.player_score_button,
                 self.player_points,
                 # set score fields 1-3:
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE)
+                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
+                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
+                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE)
             ]
         )
     
@@ -63,10 +59,10 @@ class PlayerScoreWidget(ft.UserControl):
             self.player_score_row.controls.pop()
         elif best_of == 5:
             self.player_score_row.controls.append(
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
             )
             self.player_score_row.controls.append(
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=COL_SET_EXPAND, size=FONT_SIZE),
+                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
             )
         else:
             raise ValueError("Best-Of: {} is not supported!".format(best_of))
@@ -90,9 +86,3 @@ class PlayerScoreWidget(ft.UserControl):
             set_row=row_offset+set_index
             self.player_score_row.controls[set_row].value = player_set_scores[set_index]
     
-
-
-
-
-
-

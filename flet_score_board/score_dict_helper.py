@@ -1,8 +1,6 @@
 import flet as ft
-
-GAME_KEY="Game"
-TIEBREAK_KEY="Tiebreak"
-SET_KEY="Set"
+from scorer.game import Game
+from scorer.tiebreak import Tiebreak
 
 def get_latest_set_score(match_score:dict) -> dict:
     set_keys = list(match_score.keys())
@@ -16,19 +14,19 @@ def set_is_terminated(set_score:dict) -> bool:
     return False if set_has_running_game(set_score) or set_has_running_tieabreak(set_score) else True   
 
 def set_has_running_game(set_score:dict) -> bool:
-    return set_has(GAME_KEY, set_score)
+    return set_has(Game.KEY, set_score)
 
 def set_has_running_tieabreak(set_score:dict) -> bool:
-    return set_has(TIEBREAK_KEY, set_score)
+    return set_has(Tiebreak.KEY, set_score)
 
 def set_has(key:str, set_score:dict) -> bool:
     return False if set_score.get(key) is None else True
 
 def get_point_score_for(player_name:str, set_score:dict) -> str:
     if set_has_running_game(set_score):
-        return __get_point_score_for(GAME_KEY, player_name, set_score)
+        return __get_point_score_for(Game.KEY, player_name, set_score)
     elif set_has_running_tieabreak(set_score):
-        return __get_point_score_for(TIEBREAK_KEY, player_name, set_score)
+        return __get_point_score_for(Tiebreak.KEY, player_name, set_score)
     else:
         return ""
     

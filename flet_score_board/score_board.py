@@ -10,7 +10,10 @@ from flet_score_board.score_labels_widget import ScoreLabelsWidget
 from flet_score_board.player_score_widget import PlayerScoreWidget
 from flet_score_board.app_header import AppHeader
 
-COL_POINTS_EXPAND=1
+COL_NAME_EXPAND = 4
+COL_SET_EXPAND=1
+COL_POINTS_EXPAND=2
+FONT_SIZE=24
 
 class ScoreBoard(ft.UserControl):
 
@@ -67,13 +70,6 @@ class ScoreBoard(ft.UserControl):
         self.returner_row.disable_score_button()
         
     def build(self):
-         
-        self.points_title = ft.Text(
-            value="Game",
-            text_align=ft.TextAlign.RIGHT,
-            expand=COL_POINTS_EXPAND
-        )
-        
         return ft.Container(
             width=600,
             padding=40,
