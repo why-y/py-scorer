@@ -19,7 +19,6 @@ class ScoreBoard(ft.UserControl):
 
     def __init__(self):
         super().__init__()
-        self.with_tiebreak=True
         self.best_of=3
         self.label_row = ScoreLabelsWidget()
         self.server_row = PlayerScoreWidget(self.__score_point_for_server)
@@ -30,8 +29,9 @@ class ScoreBoard(ft.UserControl):
     def __start_match(self, event):
         server = Player(self.server_row.get_player_name())
         returner = Player(self.returner_row.get_player_name())
-        logger.info("---- START MATCH: {} against {} best-of {}".format(server.name, returner.name, self.best_of))
-        self.match = Match(server, returner, bestOf=self.best_of, withTiebreaks=self.with_tiebreak)
+        with_tiebreaks = self.match_setup_row.is_tiebreak_switch_on()
+        logger.info("---- START MATCH: {} against {}; best-of {} ; with tiebreaks:{}".format(server.name, returner.name, self.best_of, with_tiebreaks))
+        self.match = Match(server, returner, bestOf=self.best_of, withTiebreaks=with_tiebreaks)
         self.server_row.set_player_name(server.name)
         self.server_row.reset_score()
         self.returner_row.set_player_name(returner.name)
@@ -82,7 +82,6 @@ class ScoreBoard(ft.UserControl):
         return ft.Container(
             width=600,
             padding=40,
-            bgcolor=ft.colors.LIGHT_GREEN,
             border_radius=ft.border_radius.all(20),
             content=ft.Column(
                 controls=[

@@ -28,6 +28,10 @@ class TestMatch:
     def test_bestof_five_match(self, test_server:Player, test_returner:Player) -> Match:
         return Match(test_server, test_returner, 5)
     
+    @pytest.fixture
+    def test_no_tiebreak_match(self, test_server:Player, test_returner:Player) -> Match:
+        return Match(test_server, test_returner, withTiebreaks=False)
+    
     def test_start_match_server_is_tom(self, test_default_match:Match):
         assert test_default_match.server.name == self.SERVER_NAME
 
@@ -123,6 +127,24 @@ class TestMatch:
                 "Set2":{
                     self.SERVER_NAME: 3,
                     self.RETURNER_NAME: 1,
+                    ScorerTestHelper.GAME_KEY: {
+                        self.SERVER_NAME: "0",
+                        self.RETURNER_NAME: "0"                     
+                    }
+                }
+            }
+
+    def test_match_without_tiebreak_8_8(self, test_no_tiebreak_match:Match, test_server:Player, test_returner:Player):
+        ScorerTestHelper.scoreXtimesFor(test_no_tiebreak_match, test_server, 5*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(test_no_tiebreak_match, test_returner, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_SET)
+        ScorerTestHelper.scoreXtimesFor(test_no_tiebreak_match, test_server, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(test_no_tiebreak_match, test_returner, 2*ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+        ScorerTestHelper.scoreXtimesFor(test_no_tiebreak_match, test_server, ScorerTestHelper.NO_OF_RALLIES_TO_WIN_GAME)
+
+        assert test_no_tiebreak_match.score() ==  {
+                "Set1":{
+                    self.SERVER_NAME: 8,
+                    self.RETURNER_NAME: 8,
                     ScorerTestHelper.GAME_KEY: {
                         self.SERVER_NAME: "0",
                         self.RETURNER_NAME: "0"                     

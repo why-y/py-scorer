@@ -12,27 +12,32 @@ class MatchConfigurationWidget(ft.UserControl):
             segments=[
                 ft.Segment(
                     value="3",
-                    label=ft.Text("3")
+                    label=ft.Text("Best-of-3")
                 ),
                 ft.Segment(
                     value="5",
-                    label=ft.Text("5")
+                    label=ft.Text("Best-of-5")
                 )
             ]
         )
+        self.with_tiebreak_switch=ft.Switch(
+            label="Tiebreaks", 
+            value=True
+        )
         self.start_button=ft.ElevatedButton(
-            text="Start The Match",
+            text="Start Match",
             on_click=on_start_match
         ) 
 
     def get_best_of(self) ->int:
         return int(self.best_of_selector.selected.pop())
+    
+    def is_tiebreak_switch_on(self) -> bool:
+        return bool(self.with_tiebreak_switch.value)
 
     def build(self) -> ft.Row:
         return ft.Row(controls=[
-                ft.Text(
-                    value="Best Of "
-                ),
                 self.best_of_selector,
+                self.with_tiebreak_switch,
                 self.start_button
         ])

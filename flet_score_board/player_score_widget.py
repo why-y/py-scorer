@@ -73,8 +73,8 @@ class PlayerScoreWidget(ft.UserControl):
         self.update()
 
     def update_score_for(self, player_name:str, match_score:dict):
-        latest_set_score=ScoreHelper.get_latest_set_score(match_score)
         self.__update_sets_for(player_name, match_score)
+        latest_set_score=ScoreHelper.get_latest_set_score(match_score)
         self.player_points.value=ScoreHelper.get_point_score_for(player_name, latest_set_score)
         self.update()
 

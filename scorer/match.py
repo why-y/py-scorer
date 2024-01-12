@@ -12,10 +12,10 @@ class Match:
     def __init__(self, server: Player, returner: Player, bestOf:int=3, withTiebreaks:bool=True) -> None:
         self.server = server
         self.returner = returner
-        self.sets = []
-        self.sets.append(Set(server, returner))
         self.bestOf = bestOf
         self.withTiebreak = withTiebreaks
+        self.sets = []
+        self.sets.append(Set(server, returner, withTiebreaks))
 
     def score(self):
         score = {}
@@ -30,7 +30,7 @@ class Match:
         if(self.isOver()):
             raise ValueError("Cannot score on a terminated match!")
         self.__getRunningSet().rallyPointFor(player)
-        if not self.isOver() and not self.__hasRunningSet(): self.sets.append(Set(self.server, self.returner))
+        if not self.isOver() and not self.__hasRunningSet(): self.sets.append(Set(self.server, self.returner, self.withTiebreak))
 
     def isOver(self):
         if(self.__hasRunningSet()):

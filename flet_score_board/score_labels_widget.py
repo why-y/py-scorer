@@ -37,7 +37,6 @@ class ScoreLabelsWidget(ft.UserControl):
         self.update()
 
     def update_labels(self, match_score:dict):
-        logger.info("Update LABELS --- match score: {}".format(match_score))
         latest_set_score = self.__get_latest_set_score(match_score)
         self.points_title.value=Tiebreak.KEY if self.__has_running_tieabreak(latest_set_score) else Game.KEY
         self.update()
