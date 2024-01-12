@@ -55,7 +55,9 @@ class ScoreBoard(ft.UserControl):
         self.match.rallyPointFor(player)
         self.__update_scoreboard()
         if self.match.isOver():
-            self.status_bar.update_status_text("Match OVER! Winner: {}".format(self.match.winner().name))
+            winner = self.match.winner()
+            self.status_bar.update_status_text("Match OVER! Winner: {}".format(winner.name))
+            self.__highlight_winner(winner)
             self.__disable_score_buttons()
             
     def __update_scoreboard(self):
@@ -68,6 +70,13 @@ class ScoreBoard(ft.UserControl):
     def __disable_score_buttons(self):
         self.server_row.disable_score_button()
         self.returner_row.disable_score_button()
+
+    def __highlight_winner(self, winner:Player):
+        if(self.match.isOver()):
+            winner_score_row = self.server_row if winner is self.match.winner() else self.returner_row
+            winner_score_row.write_to_points_field("W")
+        else:
+            raise ValueError("Cannot highlight winner since the match is not over yet. Score: {}".format(self.match.score()))
         
     def build(self):
         return ft.Container(
