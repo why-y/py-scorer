@@ -28,9 +28,9 @@ class PlayerScoreWidget(ft.UserControl):
                 self.player_score_button,
                 self.player_points,
                 # set score fields 1-3:
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE)
+                self.__create_set_score_field(),
+                self.__create_set_score_field(),
+                self.__create_set_score_field()
             ]
         )
     
@@ -58,12 +58,8 @@ class PlayerScoreWidget(ft.UserControl):
             self.player_score_row.controls.pop()
             self.player_score_row.controls.pop()
         elif best_of == 5:
-            self.player_score_row.controls.append(
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
-            )
-            self.player_score_row.controls.append(
-                ft.Text(value="", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND, size=score_board.FONT_SIZE),
-            )
+            self.player_score_row.controls.append(self.__create_set_score_field())
+            self.player_score_row.controls.append(self.__create_set_score_field())
         else:
             raise ValueError("Best-Of: {} is not supported!".format(best_of))
         self.update()
@@ -87,6 +83,30 @@ class PlayerScoreWidget(ft.UserControl):
         row_offset=3
         no_of_sets=len(player_set_scores)
         for set_index in range(0, no_of_sets):
-            set_row=row_offset+set_index
-            self.player_score_row.controls[set_row].value = player_set_scores[set_index]
+            set_score=ScoreHelper.get_set_score_by_index(set_index, match_score)
+            row_position=row_offset+set_index
+            set_text_badge = self.player_score_row.controls[row_position].content
+            set_text_badge.content.value = player_set_scores[set_index]
+            if ScoreHelper.set_has_terminated_tieabreak(set_score):
+                set_text_badge.text=ScoreHelper.get_tiebreak_points_for(player_name, set_score)
+                set_text_badge.label_visible=True
+        
+
+    def __create_set_score_field(self):
+        return ft.Container(
+            expand=score_board.COL_SET_EXPAND,
+            content= ft.Badge(
+                content=ft.Text(
+                    value="", 
+                    expand=True,
+                    width=1000,
+                    text_align=ft.TextAlign.RIGHT,
+                    size=score_board.FONT_SIZE
+                ),
+                text="",
+                label_visible=False,
+                bgcolor=score_board.TIEBREAK_BADGE_COLOR
+            )
+        )
+
     
