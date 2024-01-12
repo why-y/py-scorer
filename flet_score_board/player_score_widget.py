@@ -1,15 +1,11 @@
 import flet as ft
 from loguru import logger
+import flet_score_board.score_dict_helper as ScoreHelper
 
 FONT_SIZE = 32
 COL_NAME_EXPAND = 3
 COL_SET_EXPAND=1
 COL_POINTS_EXPAND=1
-
-GAME_KEY="Game"
-TIEBREAK_KEY="Tiebreak"
-SET_KEY="Set"
-
 
 class PlayerScoreWidget(ft.UserControl):
     def __init__(self, on_score_button_clicked):
@@ -81,47 +77,19 @@ class PlayerScoreWidget(ft.UserControl):
         self.update()
 
     def update_score_for(self, player_name:str, match_score:dict):
-        latest_set_score=self.__get_latest_set_score(match_score)
+        latest_set_score=ScoreHelper.get_latest_set_score(match_score)
         self.__update_sets_for(player_name, match_score)
-        self.__update_points_for(player_name, latest_set_score)
+        self.player_points.value=ScoreHelper.get_point_score_for(player_name, latest_set_score)
         self.update()
     
-    def __get_latest_set_score(self, match_score:dict) -> dict:
-        set_keys = list(match_score.keys())
-        return match_score.get(set_keys[-1])
-    
-    def __update_points_for(self, player_name:str, set_score:dict):
-        if self.__has_running_game(set_score):
-            game=set_score.get(GAME_KEY)
-            self.player_points.value=str(game.get(player_name))
-        elif self.__has_running_tieabreak(set_score):
-            tiebreak=set_score.get(TIEBREAK_KEY)
-            self.player_points.value=str(tiebreak.get(player_name))
-        else:
-            self.player_points.value=""
-
     def __update_sets_for(self, player_name:str, match_score:dict):
-        for set_key in match_score:
-            set_score = match_score.get(set_key)
-            row_index = self.__row_index_by_set_key(set_key)
-            self.player_score_row.controls[row_index].value = set_score.get(player_name)
-
-    def __has_running_game(self, set_score:dict) -> bool:
-        return self.__has(GAME_KEY, set_score)
+        player_set_scores=ScoreHelper.get_player_set_scores(player_name, match_score)
+        row_offset=3
+        no_of_sets=len(player_set_scores)
+        for set_index in range(0, no_of_sets):
+            set_row=row_offset+set_index
+            self.player_score_row.controls[set_row].value = player_set_scores[set_index]
     
-    def __has_running_tieabreak(self, set_score:dict) -> bool:
-        return self.__has(TIEBREAK_KEY, set_score)
-    
-    def __has(self, key:str, set_score:dict) -> bool:
-        return False if set_score.get(key) is None else True
-    
-    def __row_index_by_set_key(self, set_key:str) -> int:
-        row_offset=2
-        for set_no in range(1,6):
-            if set_key == SET_KEY + str(set_no):
-                return set_no+row_offset
-        raise ValueError("Cannot determine row index from set-key:{}".format(set_key))
-
 
 
 

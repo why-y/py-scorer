@@ -10,9 +10,6 @@ from flet_score_board.score_labels_widget import ScoreLabelsWidget
 from flet_score_board.player_score_widget import PlayerScoreWidget
 from flet_score_board.app_header import AppHeader
 
-#FONT_SIZE = 32
-#COL_NAME_EXPAND = 3
-#COL_SET_EXPAND=1
 COL_POINTS_EXPAND=1
 
 class ScoreBoard(ft.UserControl):
