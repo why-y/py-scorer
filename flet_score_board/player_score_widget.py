@@ -58,7 +58,7 @@ class PlayerScoreWidget(ft.UserControl):
     def reset_score(self):
         self.player_points.value=""
         for set_index in range(0,self.__get_no_of_set_cells()):
-            self.__get_set_cell(set_index).value=""
+            self.__clear_cell(set_index)
         self.update()
 
     def set_bestof_mode(self, best_of:int):
@@ -109,10 +109,16 @@ class PlayerScoreWidget(ft.UserControl):
                 ),
                 text="",
                 label_visible=False,
+                alignment=ft.alignment.top_right,
+                text_color=score_board.TIEBREAK_BADGE_TEXT_COLOR,
                 bgcolor=score_board.TIEBREAK_BADGE_COLOR
             )
         )
     
+    def __clear_cell(self, set_index:int):
+        self.__get_set_badge(set_index).label_visible=False
+        self.__get_set_cell(set_index).value=""
+
     def __get_no_of_set_cells(self) -> int:
         return len(self.player_score_row.controls)-ROW_SET_OFFSET
 
