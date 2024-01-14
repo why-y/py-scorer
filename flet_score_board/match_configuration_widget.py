@@ -34,6 +34,11 @@ class MatchConfigurationWidget(ft.UserControl):
     
     def is_tiebreak_switch_on(self) -> bool:
         return bool(self.with_tiebreak_switch.value)
+    
+    def reset(self):
+        self.best_of_selector.selected={"3"}
+        self.with_tiebreak_switch.value=True
+        self.update()
 
     def build(self) -> ft.Row:
         return ft.Row(controls=[
@@ -41,3 +46,4 @@ class MatchConfigurationWidget(ft.UserControl):
                 self.with_tiebreak_switch,
                 self.start_button
         ])
+    

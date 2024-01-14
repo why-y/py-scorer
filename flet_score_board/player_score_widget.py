@@ -3,6 +3,8 @@ from loguru import logger
 import flet_score_board.score_dict_helper as ScoreHelper
 import flet_score_board.score_board as score_board
 
+ROW_SET_OFFSET=3
+
 class PlayerScoreWidget(ft.UserControl):
     def __init__(self, on_score_button_clicked):
         super().__init__()
@@ -46,22 +48,27 @@ class PlayerScoreWidget(ft.UserControl):
     def get_player_name(self) -> str:
         return str(self.player_name.value)
     
+    def reset(self):
+        self.player_score_button.visible=False
+        self.player_name.visible=True
+        self.set_bestof_mode(3)
+        self.reset_score()
+        self.update()
+
     def reset_score(self):
-        self.player_points.value="0"
-        # set score of 1st set to 0
-        fist_set_index=3
-        self.player_score_row.controls[fist_set_index].value = "0"
+        self.player_points.value=""
+        for set_index in range(0,self.__get_no_of_set_cells()):
+            self.__get_set_cell(set_index).value=""
         self.update()
 
     def set_bestof_mode(self, best_of:int):
-        if best_of == 3:
-            self.player_score_row.controls.pop()
-            self.player_score_row.controls.pop()
-        elif best_of == 5:
-            self.player_score_row.controls.append(self.__create_set_score_field())
-            self.player_score_row.controls.append(self.__create_set_score_field())
-        else:
-            raise ValueError("Best-Of: {} is not supported!".format(best_of))
+        no_of_set_fields = len(self.player_score_row.controls)-ROW_SET_OFFSET
+        if no_of_set_fields < best_of:
+            for _ in range(best_of-no_of_set_fields):
+                self.player_score_row.controls.append(self.__create_set_score_field())
+        elif no_of_set_fields > best_of:
+            for _ in range(no_of_set_fields-best_of):     
+                self.player_score_row.controls.pop()
         self.update()
        
     def disable_score_button(self):
@@ -80,18 +87,15 @@ class PlayerScoreWidget(ft.UserControl):
     
     def __update_sets_for(self, player_name:str, match_score:dict):
         player_set_scores=ScoreHelper.get_player_set_scores(player_name, match_score)
-        row_offset=3
         no_of_sets=len(player_set_scores)
         for set_index in range(0, no_of_sets):
             set_score=ScoreHelper.get_set_score_by_index(set_index, match_score)
-            row_position=row_offset+set_index
-            set_text_badge = self.player_score_row.controls[row_position].content
-            set_text_badge.content.value = player_set_scores[set_index]
+            self.__get_set_cell(set_index).value = player_set_scores[set_index]
             if ScoreHelper.set_has_terminated_tieabreak(set_score):
-                set_text_badge.text=ScoreHelper.get_tiebreak_points_for(player_name, set_score)
-                set_text_badge.label_visible=True
+                set_badge=self.__get_set_badge(set_index)
+                set_badge.text=str(ScoreHelper.get_tiebreak_points_for(player_name, set_score))
+                set_badge.label_visible=True
         
-
     def __create_set_score_field(self):
         return ft.Container(
             expand=score_board.COL_SET_EXPAND,
@@ -108,5 +112,16 @@ class PlayerScoreWidget(ft.UserControl):
                 bgcolor=score_board.TIEBREAK_BADGE_COLOR
             )
         )
+    
+    def __get_no_of_set_cells(self) -> int:
+        return len(self.player_score_row.controls)-ROW_SET_OFFSET
+
+    def __get_set_cell(self, set_index:int) -> ft.Text:
+        return self.__get_set_badge(set_index).content
+    
+    def __get_set_badge(self, set_index:int) -> ft.Badge:
+        row_position=ROW_SET_OFFSET+set_index
+        return self.player_score_row.controls[row_position].content       
+
 
     

@@ -4,6 +4,8 @@ import flet_score_board.score_board as score_board
 from scorer.game import Game
 from scorer.tiebreak import Tiebreak
 
+ROW_SET_OFFSET=2
+
 class ScoreLabelsWidget(ft.UserControl):
     def __init__(self):
         super().__init__()
@@ -22,18 +24,19 @@ class ScoreLabelsWidget(ft.UserControl):
         return self.score_label_row
     
     def set_bestof_mode(self, best_of:int):
-        if(best_of==3):
+        no_of_set_labels = len(self.score_label_row.controls)-ROW_SET_OFFSET
+        if no_of_set_labels is 3 and best_of is 5:
+                self.score_label_row.controls.append(
+                    ft.Text(value="Set 4", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND),
+                )
+                self.score_label_row.controls.append(
+                    ft.Text(value="Set 5", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND),
+                )
+        elif no_of_set_labels is 5 and best_of is 3:
             self.score_label_row.controls.pop()
             self.score_label_row.controls.pop()
-        elif(best_of==5):
-            self.score_label_row.controls.append(
-                ft.Text(value="Set 4", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND)
-            )
-            self.score_label_row.controls.append(
-                ft.Text(value="Set 5", text_align=ft.TextAlign.RIGHT, expand=score_board.COL_SET_EXPAND)
-            )
         else:
-            raise ValueError("Best-Of: {} is not supported!".format(best_of))
+            logger.info(">>> No Set-Label modification! no-of-set-labels:{}; best-of:{}".format(no_of_set_labels, best_of))
         self.update()
 
     def update_labels(self, match_score:dict):

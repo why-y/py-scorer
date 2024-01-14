@@ -25,7 +25,7 @@ class ScoreBoard(ft.UserControl):
         self.server_row = PlayerScoreWidget(self.__score_point_for_server)
         self.returner_row = PlayerScoreWidget(self.__score_point_for_returner)
         self.match_setup_row = MatchConfigurationWidget(self.__on_best_of_change, self.__start_match)
-        self.status_bar = StatusBar()
+        self.status_bar = StatusBar(self.__on_reset_match)
 
     def __start_match(self, event):
         server = Player(self.server_row.get_player_name())
@@ -38,13 +38,24 @@ class ScoreBoard(ft.UserControl):
         self.returner_row.set_player_name(returner.name)
         self.returner_row.reset_score()                
         self.match_setup_row.visible=False
+        self.status_bar.show_reset_button()
         self.update()
 
     def __on_best_of_change(self, event:ft.ControlEvent):
         self.best_of = self.match_setup_row.get_best_of()
         self.label_row.set_bestof_mode(self.best_of)
         self.server_row.set_bestof_mode(self.best_of)
-        self.returner_row.set_bestof_mode(self.best_of)            
+        self.returner_row.set_bestof_mode(self.best_of) 
+
+    def __on_reset_match(self, event:ft.ControlEvent):
+        self.label_row.set_bestof_mode(3)
+        self.server_row.reset()
+        self.returner_row.reset()
+        self.match_setup_row.reset()
+        self.match_setup_row.visible=True
+        self.status_bar.hide_reset_button()
+        self.status_bar.update_status_text("Restart Match")
+        self.update()
 
     def __score_point_for_server(self, event):
         self.__score_point_for(self.match.server)
